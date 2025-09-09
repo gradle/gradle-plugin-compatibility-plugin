@@ -31,9 +31,9 @@ java {
 
 gradlePlugin {
     plugins {
-        register("feature-compatibility-plugin") {
-            id = "org.gradle.plugin.feature-compatibility"
-            implementationClass = "org.gradle.plugin.FeatureCompatibilityPlugin"
+        register("compatibility-plugin") {
+            id = "org.gradle.plugin.compatibility"
+            implementationClass = "org.gradle.plugin.devel.CompatibilityPlugin"
         }
     }
 }

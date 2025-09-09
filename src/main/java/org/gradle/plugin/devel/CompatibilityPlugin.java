@@ -1,12 +1,11 @@
-package org.gradle.plugin;
+package org.gradle.plugin.devel;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
-import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
 
-public class FeatureCompatibilityPlugin implements Plugin<Project> {
+public class CompatibilityPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
@@ -27,7 +26,7 @@ public class FeatureCompatibilityPlugin implements Plugin<Project> {
         extension.getPlugins().configureEach(
                 pluginDeclaration -> {
                     ExtensionAware extensionAware = (ExtensionAware) pluginDeclaration;
-                    extensionAware.getExtensions().create("featureCompatibility", FeatureCompatibility.class);
+                    extensionAware.getExtensions().create("compatibility", CompatibilityExtension.class);
                 }
         );
     }
@@ -36,7 +35,7 @@ public class FeatureCompatibilityPlugin implements Plugin<Project> {
         project.getTasks()
                 .withType(GeneratePluginDescriptors.class)
                 .configureEach(task -> task
-                        .doLast("addSupportedFeatureFlags", new AddFeatureCompatibility())
+                        .doLast("addSupportedFeatureFlags", new SerializeCompatibilityDataAction())
                 );
     }
 }

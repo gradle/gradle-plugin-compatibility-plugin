@@ -8,7 +8,7 @@ import spock.lang.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
 
-class FeatureCompatibilityPluginSpec extends Specification {
+class CompatibleFeatureTest extends Specification {
 
     @TempDir
     Path testProjectDir
@@ -20,11 +20,11 @@ class FeatureCompatibilityPluginSpec extends Specification {
 
         settingsFile.text = 'rootProject.name = "plugin-support-flags-plugin-test"'
         buildFile.text = """
-            import org.gradle.plugin.FeatureCompatibilityState
+            import org.gradle.plugin.devel.FeatureCompatibilityState
 
             plugins {
                 id("java-gradle-plugin")
-                id("org.gradle.plugin.feature-compatibility")
+                id("org.gradle.plugin.compatibility")
             }
 
             gradlePlugin {
@@ -32,8 +32,10 @@ class FeatureCompatibilityPluginSpec extends Specification {
                     create("testPlugin") {
                         id = "org.gradle.test.plugin"
                         implementationClass = "org.gradle.plugin.TestPlugin"
-                        featureCompatibility {
-                            configurationCache = FeatureCompatibilityState.SUPPORTED
+                        compatibility {
+                            features {
+                                configurationCache = FeatureCompatibilityState.SUPPORTED
+                            }
                         }
                     }
                 }
@@ -45,8 +47,9 @@ class FeatureCompatibilityPluginSpec extends Specification {
         BuildResult result = GradleRunner.create()
                 .withProjectDir(testProjectDir.toFile())
                 .forwardOutput()
-                .withArguments("jar")
+                .withArguments("jar", "-s")
                 .withPluginClasspath()
+                .withDebug(true)
                 .build()
 
         then: "the build is successful and properties file is correct"
@@ -58,10 +61,12 @@ class FeatureCompatibilityPluginSpec extends Specification {
         propertiesFile.toFile().exists()
 
         def content = propertiesFile.text
-        content.contains("feature-compatibility.configuration-cache=SUPPORTED")
+        // Implementation class should not be affected by the plugin
         content.contains("implementation-class=org.gradle.plugin.TestPlugin")
-        // Only configuration-cache is declared, so no isolated-projects key
-        !content.contains("feature-compatibility.isolated-projects")
+
+        // Support flag values
+        content.contains("compatibility.feature.configuration-cache=SUPPORTED")
+        content.contains("compatibility.feature.isolated-projects=UNKNOWN")
     }
 
     def "should generate correct properties file with Kotlin DSL"() {
@@ -71,12 +76,12 @@ class FeatureCompatibilityPluginSpec extends Specification {
 
         settingsFile.text = "rootProject.name = \"plugin-support-flags-plugin-test\""
         buildFile.text = """
-            import org.gradle.plugin.featureCompatibility
-            import org.gradle.plugin.FeatureCompatibilityState
+            import org.gradle.plugin.devel.compatibility
+            import org.gradle.plugin.devel.FeatureCompatibilityState
 
             plugins {
                 `java-gradle-plugin`
-                id("org.gradle.plugin.feature-compatibility")
+                id("org.gradle.plugin.compatibility")
             }
 
             gradlePlugin {
@@ -84,8 +89,10 @@ class FeatureCompatibilityPluginSpec extends Specification {
                     create("testPlugin") {
                         id = "org.gradle.test.plugin"
                         implementationClass = "org.gradle.plugin.TestPlugin"
-                        featureCompatibility {
-                            configurationCache = FeatureCompatibilityState.SUPPORTED
+                        compatibility {
+                            features {
+                                configurationCache = FeatureCompatibilityState.SUPPORTED
+                            }
                         }
                     }
                 }
@@ -110,9 +117,12 @@ class FeatureCompatibilityPluginSpec extends Specification {
         propertiesFile.toFile().exists()
 
         def content = propertiesFile.text
-        content.contains("feature-compatibility.configuration-cache=SUPPORTED")
+        // Implementation class should not be affected by the plugin
         content.contains("implementation-class=org.gradle.plugin.TestPlugin")
-        !content.contains("feature-compatibility.isolated-projects")
+
+        // Support flag values
+        content.contains("compatibility.feature.configuration-cache=SUPPORTED")
+        content.contains("compatibility.feature.isolated-projects=UNKNOWN")
     }
 
     private void createTestPluginSource() {

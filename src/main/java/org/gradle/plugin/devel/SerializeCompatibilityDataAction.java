@@ -1,10 +1,9 @@
-package org.gradle.plugin;
+package org.gradle.plugin.devel;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.ExtensionAware;
-import org.gradle.plugin.devel.PluginDeclaration;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
 
 import java.io.BufferedWriter;
@@ -13,9 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class AddFeatureCompatibility implements Action<Task> {
+public class SerializeCompatibilityDataAction implements Action<Task> {
 
-    public static final String SUPPORT_FLAG_PACKAGE = "feature-support";
+    public static final String SUPPORT_FLAG_PACKAGE = "compatibility.feature";
 
     @Override
     public void execute(Task task) {
@@ -32,14 +31,15 @@ public class AddFeatureCompatibility implements Action<Task> {
 
         for (PluginDeclaration declaration : task.getDeclarations().get()) {
             Path propertiesFile = outputDirectory.resolve(declaration.getId() + ".properties");
-            FeatureCompatibility featureCompatibility = getSupportedFeatures(declaration);
+            CompatibilityExtension compatibilityExtension = getCompatibilityExtension(declaration);
+            CompatibleFeatures compatibleFeatures = compatibilityExtension.getFeatures();
 
             try (BufferedWriter writer = Files.newBufferedWriter(propertiesFile, StandardOpenOption.APPEND)) {
                 // Configuration cache
-                writer.write(formatSupportFlag("configuration-cache", featureCompatibility.getConfigurationCache().get()));
+                writer.write(formatSupportFlag("configuration-cache", compatibleFeatures.getConfigurationCache().get()));
                 writer.newLine();
                 // Isolated projects
-                writer.write(formatSupportFlag("isolated-projects", featureCompatibility.getIsolatedProjects().get()));
+                writer.write(formatSupportFlag("isolated-projects", compatibleFeatures.getIsolatedProjects().get()));
                 writer.newLine();
             } catch (IOException ex) {
                 throw new GradleException("Failed to write supported features to " + propertiesFile, ex);
@@ -55,13 +55,13 @@ public class AddFeatureCompatibility implements Action<Task> {
         sb.append("=");
         switch (state) {
             case UNKNOWN:
-                sb.append("unknown");
+                sb.append("UNKNOWN");
                 break;
             case SUPPORTED:
-                sb.append("supported");
+                sb.append("SUPPORTED");
                 break;
             case NOT_SUPPORTED:
-                sb.append("not-supported");
+                sb.append("NOT-SUPPORTED");
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported feature state: " + state);
@@ -69,9 +69,9 @@ public class AddFeatureCompatibility implements Action<Task> {
         return sb.toString();
     }
 
-    private static FeatureCompatibility getSupportedFeatures(PluginDeclaration declaration) {
+    private static CompatibilityExtension getCompatibilityExtension(PluginDeclaration declaration) {
         ExtensionAware extensionAwareDeclaration = (ExtensionAware) declaration;
-        return extensionAwareDeclaration.getExtensions().getByType(FeatureCompatibility.class);
+        return extensionAwareDeclaration.getExtensions().getByType(CompatibilityExtension.class);
     }
 
 }

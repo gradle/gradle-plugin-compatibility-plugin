@@ -1,4 +1,4 @@
-package org.gradle.plugin;
+package org.gradle.plugin.devel;
 
 public enum FeatureCompatibilityState {
     /**
