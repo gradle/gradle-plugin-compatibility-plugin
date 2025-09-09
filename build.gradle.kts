@@ -1,10 +1,11 @@
 plugins {
     `java-gradle-plugin`
-    `maven-publish`
+    `groovy-gradle-plugin`
     `kotlin-dsl`
+    `maven-publish`
 }
 
-group = "org.gradle"
+group = "org.gradle.plugin"
 version = "0.1-SNAPSHOT"
 
 repositories {
@@ -16,9 +17,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.13.4"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation(platform("org.spockframework:spock-bom:2.3-groovy-4.0"))
+    testImplementation("org.spockframework:spock-core")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -30,9 +31,9 @@ java {
 
 gradlePlugin {
     plugins {
-        register("supported-features-plugin") {
-            id = "org.gradle.supported-plugin-features"
-            implementationClass = "org.gradle.plugin.SupportedPluginFeaturesPlugin"
+        register("feature-compatibility-plugin") {
+            id = "org.gradle.plugin.feature-compatibility"
+            implementationClass = "org.gradle.plugin.FeatureCompatibilityPlugin"
         }
     }
 }

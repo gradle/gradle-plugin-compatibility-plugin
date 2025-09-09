@@ -1,6 +1,6 @@
 package org.gradle.plugin;
 
-public enum SupportedFeatureState {
+public enum FeatureCompatibilityState {
     /**
      * This is the default state and indicates that the plugin has not declared support for this feature.
      */

@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class AddSupportedFlagsAction implements Action<Task> {
+public class AddFeatureCompatibility implements Action<Task> {
 
     public static final String SUPPORT_FLAG_PACKAGE = "feature-support";
 
@@ -32,14 +32,14 @@ public class AddSupportedFlagsAction implements Action<Task> {
 
         for (PluginDeclaration declaration : task.getDeclarations().get()) {
             Path propertiesFile = outputDirectory.resolve(declaration.getId() + ".properties");
-            SupportedFeatures supportedFeatures = getSupportedFeatures(declaration);
+            FeatureCompatibility featureCompatibility = getSupportedFeatures(declaration);
 
             try (BufferedWriter writer = Files.newBufferedWriter(propertiesFile, StandardOpenOption.APPEND)) {
                 // Configuration cache
-                writer.write(formatSupportFlag("configuration-cache", supportedFeatures.getConfigurationCache().get()));
+                writer.write(formatSupportFlag("configuration-cache", featureCompatibility.getConfigurationCache().get()));
                 writer.newLine();
                 // Isolated projects
-                writer.write(formatSupportFlag("isolated-projects", supportedFeatures.getIsolatedProjects().get()));
+                writer.write(formatSupportFlag("isolated-projects", featureCompatibility.getIsolatedProjects().get()));
                 writer.newLine();
             } catch (IOException ex) {
                 throw new GradleException("Failed to write supported features to " + propertiesFile, ex);
@@ -47,7 +47,7 @@ public class AddSupportedFlagsAction implements Action<Task> {
         }
     }
 
-    private static String formatSupportFlag(String name, SupportedFeatureState state) {
+    private static String formatSupportFlag(String name, FeatureCompatibilityState state) {
         StringBuilder sb = new StringBuilder();
         sb.append(SUPPORT_FLAG_PACKAGE);
         sb.append(".");
@@ -69,9 +69,9 @@ public class AddSupportedFlagsAction implements Action<Task> {
         return sb.toString();
     }
 
-    private static SupportedFeatures getSupportedFeatures(PluginDeclaration declaration) {
+    private static FeatureCompatibility getSupportedFeatures(PluginDeclaration declaration) {
         ExtensionAware extensionAwareDeclaration = (ExtensionAware) declaration;
-        return extensionAwareDeclaration.getExtensions().getByType(SupportedFeatures.class);
+        return extensionAwareDeclaration.getExtensions().getByType(FeatureCompatibility.class);
     }
 
 }

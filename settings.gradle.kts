@@ -1,1 +1,1 @@
-rootProject.name = "cc-support-backport-plugin"
+rootProject.name = "gradle-feature-compatibility-plugin"

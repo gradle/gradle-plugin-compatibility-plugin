@@ -6,7 +6,8 @@ import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
 
-public class SupportedPluginFeaturesPlugin implements Plugin<Project> {
+public class FeatureCompatibilityPlugin implements Plugin<Project> {
+
     @Override
     public void apply(Project project) {
         project.getPluginManager().withPlugin(
@@ -26,7 +27,7 @@ public class SupportedPluginFeaturesPlugin implements Plugin<Project> {
         extension.getPlugins().configureEach(
                 pluginDeclaration -> {
                     ExtensionAware extensionAware = (ExtensionAware) pluginDeclaration;
-                    extensionAware.getExtensions().create("supportedFeatures", SupportedFeatures.class);
+                    extensionAware.getExtensions().create("featureCompatibility", FeatureCompatibility.class);
                 }
         );
     }
@@ -34,9 +35,8 @@ public class SupportedPluginFeaturesPlugin implements Plugin<Project> {
     private static void configurePluginDescriptorsTask(Project project) {
         project.getTasks()
                 .withType(GeneratePluginDescriptors.class)
-                .configureEach(
-                        task ->
-                                task.doLast("addSupportedFeatureFlags", new AddSupportedFlagsAction())
+                .configureEach(task -> task
+                        .doLast("addSupportedFeatureFlags", new AddFeatureCompatibility())
                 );
     }
 }

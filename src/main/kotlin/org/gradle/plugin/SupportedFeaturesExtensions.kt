@@ -5,7 +5,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.the
 import org.gradle.plugin.devel.PluginDeclaration
 
-fun PluginDeclaration.supportedFeatures(action: Action<SupportedFeatures>) {
+fun PluginDeclaration.featureCompatibility(action: Action<FeatureCompatibility>) {
     require(this is ExtensionAware)
-    action.execute(the<SupportedFeatures>())
+    action.execute(the<FeatureCompatibility>())
 }
