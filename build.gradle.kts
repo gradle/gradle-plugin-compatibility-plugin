@@ -6,14 +6,10 @@ plugins {
 }
 
 group = "org.gradle.plugin"
-version = "0.1-SNAPSHOT"
+version = "9.1.0"
 
 repositories {
     mavenCentral()
-    maven {
-        // Local directory for testing
-        url = uri("file://${rootProject.projectDir}/local-repo")
-    }
 }
 
 dependencies {
@@ -32,7 +28,7 @@ java {
 gradlePlugin {
     plugins {
         register("compatibility-plugin") {
-            id = "org.gradle.plugin.compatibility"
+            id = "org.gradle.plugin.devel.compatibility"
             implementationClass = "org.gradle.plugin.devel.CompatibilityPlugin"
         }
     }

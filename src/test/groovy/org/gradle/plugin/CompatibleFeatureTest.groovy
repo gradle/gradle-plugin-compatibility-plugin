@@ -20,11 +20,9 @@ class CompatibleFeatureTest extends Specification {
 
         settingsFile.text = 'rootProject.name = "plugin-support-flags-plugin-test"'
         buildFile.text = """
-            import org.gradle.plugin.devel.FeatureCompatibilityState
-
             plugins {
                 id("java-gradle-plugin")
-                id("org.gradle.plugin.compatibility")
+                id("org.gradle.plugin.devel.compatibility")
             }
 
             gradlePlugin {
@@ -34,7 +32,7 @@ class CompatibleFeatureTest extends Specification {
                         implementationClass = "org.gradle.plugin.TestPlugin"
                         compatibility {
                             features {
-                                configurationCache = FeatureCompatibilityState.SUPPORTED
+                                configurationCache = true
                             }
                         }
                     }
@@ -62,11 +60,11 @@ class CompatibleFeatureTest extends Specification {
 
         def content = propertiesFile.text
         // Implementation class should not be affected by the plugin
-        content.contains("implementation-class=org.gradle.plugin.TestPlugin")
+        content.contains("implementation-class=org.gradle.plugin.TestPlugin\n")
 
         // Support flag values
-        content.contains("compatibility.feature.configuration-cache=SUPPORTED")
-        content.contains("compatibility.feature.isolated-projects=UNKNOWN")
+        content.contains("compatibility.feature.configuration-cache=SUPPORTED\n")
+        content.contains("compatibility.feature.isolated-projects=UNKNOWN\n")
     }
 
     def "should generate correct properties file with Kotlin DSL"() {
@@ -77,11 +75,10 @@ class CompatibleFeatureTest extends Specification {
         settingsFile.text = "rootProject.name = \"plugin-support-flags-plugin-test\""
         buildFile.text = """
             import org.gradle.plugin.devel.compatibility
-            import org.gradle.plugin.devel.FeatureCompatibilityState
 
             plugins {
                 `java-gradle-plugin`
-                id("org.gradle.plugin.compatibility")
+                id("org.gradle.plugin.devel.compatibility")
             }
 
             gradlePlugin {
@@ -91,7 +88,7 @@ class CompatibleFeatureTest extends Specification {
                         implementationClass = "org.gradle.plugin.TestPlugin"
                         compatibility {
                             features {
-                                configurationCache = FeatureCompatibilityState.SUPPORTED
+                                configurationCache = true
                             }
                         }
                     }
@@ -118,11 +115,11 @@ class CompatibleFeatureTest extends Specification {
 
         def content = propertiesFile.text
         // Implementation class should not be affected by the plugin
-        content.contains("implementation-class=org.gradle.plugin.TestPlugin")
+        content.contains("implementation-class=org.gradle.plugin.TestPlugin\n")
 
         // Support flag values
-        content.contains("compatibility.feature.configuration-cache=SUPPORTED")
-        content.contains("compatibility.feature.isolated-projects=UNKNOWN")
+        content.contains("compatibility.feature.configuration-cache=SUPPORTED\n")
+        content.contains("compatibility.feature.isolated-projects=UNKNOWN\n")
     }
 
     private void createTestPluginSource() {
