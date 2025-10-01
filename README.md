@@ -55,6 +55,8 @@ gradlePlugin {
 
 ## Supported features
 
+In the `compatibility` block, you can define the following `features`:
+
 | Feature              | Description                                                                | Since version |
 |----------------------|----------------------------------------------------------------------------|---------------|
 | `configurationCache` | Indicates that the plugin is compatible with Gradle's configuration cache. | 1.0.0         |
