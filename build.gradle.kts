@@ -10,19 +10,27 @@ version = "9.1.0"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     testImplementation(platform("org.spockframework:spock-bom:2.3-groovy-4.0"))
     testImplementation("org.spockframework:spock-core")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
-    }
+kotlin {
+    // Also sets the Java toolchain
+    jvmToolchain(11)
+}
+
+val testCompiler = javaToolchains.compilerFor {
+    languageVersion.set(JavaLanguageVersion.of(17))
+}
+val testLauncher = javaToolchains.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 gradlePlugin {
@@ -34,15 +42,13 @@ gradlePlugin {
     }
 }
 
-tasks.named<Test>("test") {
-    useJUnitPlatform()
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion.set(JavaLanguageVersion.of(21))
+tasks {
+    compileTestJava {
+        javaCompiler = testCompiler
     }
-}
 
-tasks.named<JavaCompile>("compileTestJava") {
-    javaCompiler = javaToolchains.compilerFor {
-        languageVersion.set(JavaLanguageVersion.of(21))
+    test {
+        useJUnitPlatform()
+        javaLauncher = testLauncher
     }
 }

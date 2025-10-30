@@ -34,8 +34,8 @@ public class CompatibilityPlugin implements Plugin<Project> {
     private static void configurePluginDescriptorsTask(Project project) {
         project.getTasks()
                 .withType(GeneratePluginDescriptors.class)
-                .configureEach(task -> task
-                        .doLast("addSupportedFeatureFlags", new SerializeCompatibilityDataAction(task))
-                );
+                .configureEach(task -> {
+                    task.doLast("addSupportedFeatureFlags", new SerializeCompatibilityDataAction(task));
+                });
     }
 }
