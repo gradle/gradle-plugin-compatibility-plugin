@@ -7,6 +7,8 @@ import org.gradle.plugin.devel.CompatibilityExtension
 import org.gradle.plugin.devel.PluginDeclaration
 
 fun PluginDeclaration.compatibility(action: Action<CompatibilityExtension>) {
-    require(this is ExtensionAware)
-    action.execute(the<CompatibilityExtension>())
+//    require(this is ExtensionAware)
+//    action.execute(the<CompatibilityExtension>())
+
+    CompatibilityRegistry.store(this, action)
 }
