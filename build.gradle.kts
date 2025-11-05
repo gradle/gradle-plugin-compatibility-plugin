@@ -1,6 +1,5 @@
 plugins {
     `java-gradle-plugin`
-    `groovy-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
 }
@@ -14,11 +13,29 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.spockframework:spock-bom:2.3-groovy-4.0"))
-    testImplementation("org.spockframework:spock-core")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0") {
+        because("Needed for parsing the Gradle releases metadata JSON")
+    }
+
+    testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+configurations {
+    testCompileClasspath {
+        attributes {
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+        }
+    }
+
+    testRuntimeClasspath {
+        attributes {
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+        }
+    }
 }
 
 kotlin {
@@ -43,6 +60,8 @@ gradlePlugin {
 }
 
 tasks {
+
+
     compileTestJava {
         javaCompiler = testCompiler
     }

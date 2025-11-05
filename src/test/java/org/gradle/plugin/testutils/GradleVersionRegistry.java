@@ -1,4 +1,4 @@
-package org.gradle.plugin.testing;
+package org.gradle.plugin.testutils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
