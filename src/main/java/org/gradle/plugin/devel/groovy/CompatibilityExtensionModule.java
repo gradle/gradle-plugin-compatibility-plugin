@@ -5,7 +5,6 @@ import org.gradle.plugin.devel.CompatibilityRegistry;
 import org.gradle.plugin.devel.PluginDeclaration;
 
 public class CompatibilityExtensionModule {
-
     public static void compatibility(PluginDeclaration declaration, Closure<?> closure) {
         CompatibilityRegistry.store(
                 declaration,
@@ -16,5 +15,4 @@ public class CompatibilityExtensionModule {
                 }
         );
     }
-
 }
