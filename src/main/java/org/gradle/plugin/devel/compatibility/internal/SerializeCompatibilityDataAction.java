@@ -1,13 +1,16 @@
-package org.gradle.plugin.devel;
+package org.gradle.plugin.devel.compatibility.internal;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.Directory;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.plugins.ExtensionAware;
+import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.plugin.devel.PluginDeclaration;
+import org.gradle.plugin.devel.compatibility.CompatibleFeatures;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
 import org.jspecify.annotations.NullMarked;
 
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,27 +28,60 @@ import java.util.stream.Collectors;
 public abstract class SerializeCompatibilityDataAction implements Action<Task> {
 
     public static final String SUPPORT_FLAG_PACKAGE = "compatibility.feature";
+    private final ObjectFactory objectFactory;
     private final Provider<Directory> outputDirectory;
     private final Provider<Map<String, CompatibleFeatures>> compatibilityData;
 
     @Inject
-    public SerializeCompatibilityDataAction(GeneratePluginDescriptors task) {
+    public SerializeCompatibilityDataAction(ObjectFactory objectFactory, GeneratePluginDescriptors task) {
+        this.objectFactory = objectFactory;
+        Project project = task.getProject();
+        CompatibilityStrategy strategy = CompatibilityStrategyFactory.getStrategy();
         outputDirectory = task.getOutputDirectory();
-        compatibilityData = task.getProject().provider(() ->
+        compatibilityData = project.provider(() ->
                 task.getDeclarations()
                         .get()
                         .stream()
                         .collect(
                                 Collectors.toMap(
                                         PluginDeclaration::getId,
-                                        this::extractCompatibilityFeatures
+                                        declaration -> strategy.extractFeatures(declaration, project)
                                 )
                         )
         );
     }
 
-    @Inject
-    protected abstract ObjectFactory getObjectFactory();
+    /**
+     * Returns a provider that resolves compatibility data to a serializable format for task inputs.
+     * This is necessary because Property&lt;Boolean&gt; values (especially nulls) cannot be reliably
+     * serialized by Gradle's task input tracking in older Gradle versions.
+     */
+    public Provider<Map<String, Map<String, String>>> getSerializableCompatibilityData() {
+        return compatibilityData.flatMap(data -> {
+            MapProperty<String, Map<String, String>> result = uncheckedCast(
+                    objectFactory.mapProperty(String.class, Map.class)
+            );
+            data.forEach((id, features) -> result.put(id, compatibilityAsMap(features)));
+            return result;
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T, U> T uncheckedCast(U object) {
+        return (T) object;
+    }
+
+    private static Provider<Map<String, String>> compatibilityAsMap(CompatibleFeatures features) {
+        return toSupportLevel(features.getConfigurationCache())
+                .zip(
+                        toSupportLevel(features.getIsolatedProjects()),
+                        (configurationCache, isolatedProjects) -> {
+                            Map<String, String> featureMap = new HashMap<>();
+                            featureMap.put("configurationCache", configurationCache);
+                            featureMap.put("isolatedProjects", isolatedProjects);
+                            return featureMap;
+                        });
+    }
 
     @Override
     public void execute(Task task) {
@@ -69,18 +106,11 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
         writer.write(".");
         writer.write(name);
         writer.write("=");
-        writer.write(support.map(supported -> supported ? "SUPPORTED" : "NOT_SUPPORTED").getOrElse("UNKNOWN"));
+        writer.write(toSupportLevel(support).get());
         writer.write('\n');
     }
 
-    private CompatibleFeatures extractCompatibilityFeatures(PluginDeclaration declaration) {
-        CompatibilityExtension extension = getObjectFactory().newInstance(CompatibilityExtension.class);
-
-        CompatibilityRegistry
-                .getForDeclaration(declaration)
-                .forEach(action -> action.execute(extension));
-
-        return extension.getFeatures();
+    private static Provider<String> toSupportLevel(Property<Boolean> property) {
+        return property.map(value -> value ? "SUPPORTED" : "NOT_SUPPORTED").orElse("UNKNOWN");
     }
-
 }

@@ -1,4 +1,4 @@
-import org.gradle.plugin.devel.compatibility
+import org.gradle.plugin.devel.compatibility.compatibility
 
 plugins {
     `java-gradle-plugin`
