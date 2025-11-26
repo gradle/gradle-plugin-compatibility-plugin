@@ -11,7 +11,7 @@ import org.gradle.plugin.devel.PluginDeclaration;
  * Strategy for Gradle >= 8.14 where PluginDeclaration implements ExtensionAware.
  * Uses the ExtensionAware API to directly attach and configure compatibility extensions.
  */
-public class ExtensionAwareStrategy implements CompatibilityStrategy {
+class ExtensionAwareStrategy implements CompatibilityStrategy {
 
     @Override
     public void createExtension(PluginDeclaration declaration, Project project) {

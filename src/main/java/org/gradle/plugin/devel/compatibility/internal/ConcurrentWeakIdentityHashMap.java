@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  */
-public class ConcurrentWeakIdentityHashMap<K, V> {
+class ConcurrentWeakIdentityHashMap<K, V> {
     private final ConcurrentHashMap<WeakKeyReference, V> map = new ConcurrentHashMap<>();
     private final ReferenceQueue<K> cleanupQueue = new ReferenceQueue<>();
 

@@ -10,7 +10,7 @@ import org.gradle.plugin.devel.PluginDeclaration;
  * Strategy for Gradle < 8.14 where PluginDeclaration does not implement ExtensionAware.
  * Uses a registry-based approach to store and retrieve compatibility configuration.
  */
-public class RegistryStrategy implements CompatibilityStrategy {
+class RegistryStrategy implements CompatibilityStrategy {
 
     @Override
     public void createExtension(PluginDeclaration declaration, Project project) {
