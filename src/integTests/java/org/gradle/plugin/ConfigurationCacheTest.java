@@ -93,7 +93,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
                         compatibility {
                             features {
                                 configurationCache.set(
-                                    providers.systemProperty("enable-cc").map { it.toBoolean() }.orElse(false)
+                                    providers.systemProperty("enable-cc").map { it.toBoolean() }
                                 )
                             }
                         }
@@ -107,9 +107,9 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         runGradle("jar");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED);
+                .hasConfigurationCache(UNKNOWN);
 
-        // Second run - the cache should be invalidated
+        // Second run - the cache should not be invalidated
         var secondRun = runGradle("jar", "-Denable-cc=true");
 
         assertThat(secondRun.getOutput())
@@ -118,6 +118,16 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(SUPPORTED);
+
+        // Second run - the cache should not be invalidated
+        var thirdRun = runGradle("jar", "-Denable-cc=false");
+
+        assertThat(thirdRun.getOutput())
+                .contains("BUILD SUCCESSFUL")
+                .contains("Reusing configuration cache.");  // Cache was not invalidated
+
+        assertPluginDescriptor("org.gradle.test.plugin")
+                .hasConfigurationCache(NOT_SUPPORTED);
     }
 
     @Test
