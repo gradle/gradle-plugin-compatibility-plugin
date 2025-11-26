@@ -73,7 +73,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasIsolatedProjects(UNDECLARED);
     }
 
     @Test
@@ -107,7 +107,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         runGradle("jar");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNKNOWN);
+                .hasConfigurationCache(UNDECLARED);
 
         // Second run - the cache should not be invalidated
         var secondRun = runGradle("jar", "-Denable-cc=true");
@@ -127,7 +127,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
                 .contains("Reusing configuration cache.");  // Cache was not invalidated
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
     }
 
     @Test
@@ -178,10 +178,10 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("com.example.plugin1")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasIsolatedProjects(UNDECLARED);
 
         assertPluginDescriptor("com.example.plugin2")
-                .hasConfigurationCache(UNKNOWN)
+                .hasConfigurationCache(UNDECLARED)
                 .hasIsolatedProjects(SUPPORTED);
     }
 }

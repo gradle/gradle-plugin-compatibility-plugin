@@ -15,8 +15,8 @@ public class CompatibilityRegistry {
             List<Action<CompatibilityExtension>>
             > featureConfigurators = new ConcurrentWeakIdentityHashMap<>();
 
-    public static void store( PluginDeclaration declaration, Action<CompatibilityExtension> action) {
-        featureConfigurators.computeIfAbsent(declaration, d -> new ArrayList<>()).add(action);
+    public static void store(PluginDeclaration declaration, Action<? super CompatibilityExtension> action) {
+        featureConfigurators.computeIfAbsent(declaration, d -> new ArrayList<>()).add(action::execute);
     }
 
     public static List<Action<CompatibilityExtension>> getForDeclaration(PluginDeclaration declaration) {

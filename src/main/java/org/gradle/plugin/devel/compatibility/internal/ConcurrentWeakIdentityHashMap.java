@@ -1,7 +1,6 @@
 package org.gradle.plugin.devel.compatibility.internal;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -33,8 +32,7 @@ class ConcurrentWeakIdentityHashMap<K, V> {
      * @param defaultValue the value to return if no mapping exists
      * @return the value associated with the key, or the default value
      */
-    @Nullable
-    public V getOrDefault(@NotNull K key, @Nullable V defaultValue) {
+    public V getOrDefault(K key, V defaultValue) {
         cleanStaleRefs();
         return map.getOrDefault(new WeakKeyReference(key), defaultValue);
     }
@@ -48,8 +46,7 @@ class ConcurrentWeakIdentityHashMap<K, V> {
      * @param mappingFunction the function to compute a value
      * @return the current (existing or computed) value associated with the specified key
      */
-    @NotNull
-    public V computeIfAbsent(@NotNull K key, @NotNull Function<? super K, ? extends V> mappingFunction) {
+    public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
         cleanStaleRefs();
         return map.computeIfAbsent(new WeakKeyReference(key), ref -> mappingFunction.apply(key));
     }
@@ -61,8 +58,7 @@ class ConcurrentWeakIdentityHashMap<K, V> {
      * @param key the key whose mapping is to be removed from the map
      * @return the previous value associated with the key, or null if there was no mapping
      */
-    @Nullable
-    public V remove(@NotNull K key) {
+    public @Nullable V remove(K key) {
         cleanStaleRefs();
         return map.remove(new WeakKeyReference(key));
     }
@@ -86,13 +82,13 @@ class ConcurrentWeakIdentityHashMap<K, V> {
     private class WeakKeyReference extends WeakReference<K> {
         private final int identityHashCode;
 
-        WeakKeyReference(@NotNull K key) {
+        WeakKeyReference(K key) {
             super(key, cleanupQueue);
             this.identityHashCode = System.identityHashCode(key);
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(@Nullable Object obj) {
             if (obj == this) {
                 return true;
             }

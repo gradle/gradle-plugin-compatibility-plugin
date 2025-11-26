@@ -6,6 +6,7 @@ import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.compatibility.internal.groovy.CompatibilityProjectExtension;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
 
+@SuppressWarnings("unused") // Instantiated by Gradle
 public class CompatibilityPlugin implements Plugin<Project> {
 
     @Override

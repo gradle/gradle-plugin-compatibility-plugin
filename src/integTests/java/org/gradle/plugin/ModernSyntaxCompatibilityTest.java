@@ -53,7 +53,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(NOT_SUPPORTED);
+                .hasIsolatedProjects(UNSUPPORTED);
     }
 
     @Test
@@ -87,7 +87,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(NOT_SUPPORTED);
+                .hasIsolatedProjects(UNSUPPORTED);
     }
 
     @Test
@@ -117,7 +117,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(UNKNOWN)
+                .hasConfigurationCache(UNDECLARED)
                 .hasIsolatedProjects(SUPPORTED);
     }
 }

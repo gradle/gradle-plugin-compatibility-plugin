@@ -2,16 +2,14 @@ package org.gradle.plugin.devel.compatibility
 
 import org.gradle.api.Action
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.kotlin.dsl.the
-import org.gradle.plugin.devel.compatibility.CompatibilityExtension
-import org.gradle.plugin.devel.compatibility.internal.CompatibilityRegistry
 import org.gradle.plugin.devel.PluginDeclaration
+import org.gradle.plugin.devel.compatibility.internal.CompatibilityRegistry
 
-fun PluginDeclaration.compatibility(action: Action<CompatibilityExtension>) {
+fun PluginDeclaration.compatibility(action: Action<in CompatibilityExtension>) {
     if (this is ExtensionAware) {
         this.extensions.configure(CompatibilityExtension::class.java, action)
     } else {
-        // Use the workaround for older Gradle version.
+        // Use the workaround for older Gradle versions.
         CompatibilityRegistry.store(this, action)
     }
 }

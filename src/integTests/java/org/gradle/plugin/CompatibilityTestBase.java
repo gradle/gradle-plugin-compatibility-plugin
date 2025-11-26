@@ -1,6 +1,8 @@
 package org.gradle.plugin;
 
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.util.CanIgnoreReturnValue;
+import org.gradle.plugin.devel.compatibility.CompatibilityDeclarationProtocol;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.util.GradleVersion;
@@ -23,9 +25,9 @@ import static org.gradle.plugin.devel.compatibility.internal.CompatibilityStrate
  * Provides common utilities and test helpers.
  */
 public abstract class CompatibilityTestBase {
-    protected static final String SUPPORTED = "SUPPORTED";
-    protected static final String NOT_SUPPORTED = "NOT_SUPPORTED";
-    protected static final String UNKNOWN = "UNKNOWN";
+    protected static final String SUPPORTED = CompatibilityDeclarationProtocol.DECLARED_SUPPORTED;
+    protected static final String UNSUPPORTED = CompatibilityDeclarationProtocol.DECLARED_UNSUPPORTED;
+    protected static final String UNDECLARED = CompatibilityDeclarationProtocol.UNDECLARED;
 
     @TempDir
     protected Path testProjectDir;
@@ -220,6 +222,7 @@ public abstract class CompatibilityTestBase {
             super(content, PluginDescriptorAssertion.class);
         }
 
+        @CanIgnoreReturnValue
         public PluginDescriptorAssertion hasImplementationClass(String implementationClass) {
             isNotNull();
             String expectedLine = "implementation-class=" + implementationClass + "\n";
@@ -229,21 +232,25 @@ public abstract class CompatibilityTestBase {
             return this;
         }
 
+        @CanIgnoreReturnValue
         public PluginDescriptorAssertion hasFeature(String featureName, String supportLevel) {
             isNotNull();
-            String expectedLine = "compatibility.feature." + featureName + "=" + supportLevel + "\n";
+            String expectedLine =
+                    CompatibilityDeclarationProtocol.SUPPORT_FLAGS_PREFIX + featureName + "=" + supportLevel + "\n";
             if (!actual.contains(expectedLine)) {
                 failWithMessage("Expected plugin descriptor to contain feature <%s>=<%s> but did not", featureName, supportLevel);
             }
             return this;
         }
 
+        @CanIgnoreReturnValue
         public PluginDescriptorAssertion hasConfigurationCache(String supportLevel) {
-            return hasFeature("configuration-cache", supportLevel);
+            return hasFeature(CompatibilityDeclarationProtocol.FEATURE_CONFIGURATION_CACHE, supportLevel);
         }
 
+        @CanIgnoreReturnValue
         public PluginDescriptorAssertion hasIsolatedProjects(String supportLevel) {
-            return hasFeature("isolated-projects", supportLevel);
+            return hasFeature(CompatibilityDeclarationProtocol.FEATURE_ISOLATED_PROJECTS, supportLevel);
         }
     }
 }
