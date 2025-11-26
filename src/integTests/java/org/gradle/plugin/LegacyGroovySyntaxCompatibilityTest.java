@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ParameterizedClass
 @MethodSource("allGradleVersions")
 @Execution(ExecutionMode.CONCURRENT)
-class LegacySyntaxCompatibilityTest extends CompatibilityTestBase {
+class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
 
-    LegacySyntaxCompatibilityTest(String version) {
+    LegacyGroovySyntaxCompatibilityTest(String version) {
         super(version);
     }
 
