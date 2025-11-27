@@ -61,7 +61,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
     void modernSyntaxKotlinDsl() throws IOException {
         withSettingsFile();
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {

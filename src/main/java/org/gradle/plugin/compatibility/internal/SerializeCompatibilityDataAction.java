@@ -1,4 +1,4 @@
-package org.gradle.plugin.devel.compatibility.internal;
+package org.gradle.plugin.compatibility.internal;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -10,8 +10,8 @@ import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.plugin.devel.PluginDeclaration;
-import org.gradle.plugin.devel.compatibility.CompatibilityDeclarationProtocol;
-import org.gradle.plugin.devel.compatibility.CompatibleFeatures;
+import org.gradle.plugin.compatibility.CompatibilityDeclarationProtocol;
+import org.gradle.plugin.compatibility.CompatibleFeatures;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
 
 import javax.inject.Inject;

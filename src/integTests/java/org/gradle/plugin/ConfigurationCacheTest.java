@@ -37,7 +37,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
     @DisplayName("Configuration cache reused across builds")
     void configurationCacheReusedAcrossBuilds() throws IOException {
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -83,7 +83,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         Assumptions.assumeThat(getGradleVersion()).isGreaterThanOrEqualTo(GradleVersion.version("8.7"));
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -134,7 +134,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
     @DisplayName("Multiple plugins with configuration cache")
     void multiplePluginsWithConfigurationCache() throws IOException {
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {

@@ -50,7 +50,7 @@ class FeatureCombinationsTest extends CompatibilityTestBase {
         String featuresBlock = buildFeaturesBlock(ccValue, ipValue);
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {

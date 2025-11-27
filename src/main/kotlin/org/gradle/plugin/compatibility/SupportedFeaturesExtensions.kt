@@ -1,9 +1,9 @@
-package org.gradle.plugin.devel.compatibility
+package org.gradle.plugin.compatibility
 
 import org.gradle.api.Action
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.plugin.devel.PluginDeclaration
-import org.gradle.plugin.devel.compatibility.internal.CompatibilityRegistry
+import org.gradle.plugin.compatibility.internal.CompatibilityRegistry
 
 fun PluginDeclaration.compatibility(action: Action<in CompatibilityExtension>) {
     if (this is ExtensionAware) {

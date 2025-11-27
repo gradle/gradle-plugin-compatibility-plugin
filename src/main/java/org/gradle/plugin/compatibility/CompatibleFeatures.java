@@ -1,4 +1,4 @@
-package org.gradle.plugin.devel.compatibility;
+package org.gradle.plugin.compatibility;
 
 import org.gradle.api.Incubating;
 import org.gradle.api.provider.Property;

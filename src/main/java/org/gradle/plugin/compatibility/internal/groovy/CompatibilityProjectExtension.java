@@ -1,10 +1,10 @@
-package org.gradle.plugin.devel.compatibility.internal.groovy;
+package org.gradle.plugin.compatibility.internal.groovy;
 
 import groovy.lang.Closure;
 import org.gradle.api.Project;
 import org.gradle.plugin.devel.PluginDeclaration;
-import org.gradle.plugin.devel.compatibility.internal.CompatibilityStrategy;
-import org.gradle.plugin.devel.compatibility.internal.CompatibilityStrategyFactory;
+import org.gradle.plugin.compatibility.internal.CompatibilityStrategy;
+import org.gradle.plugin.compatibility.internal.CompatibilityStrategyFactory;
 import org.jspecify.annotations.Nullable;
 
 import javax.inject.Inject;

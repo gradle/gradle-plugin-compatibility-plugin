@@ -2,7 +2,7 @@ package org.gradle.plugin;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.util.CanIgnoreReturnValue;
-import org.gradle.plugin.devel.compatibility.CompatibilityDeclarationProtocol;
+import org.gradle.plugin.compatibility.CompatibilityDeclarationProtocol;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.util.GradleVersion;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gradle.plugin.devel.compatibility.internal.CompatibilityStrategyFactory.EXTENSION_AWARE_MIN_VERSION;
+import static org.gradle.plugin.compatibility.internal.CompatibilityStrategyFactory.EXTENSION_AWARE_MIN_VERSION;
 
 /**
  * Base class for compatibility plugin integration tests.
@@ -123,7 +123,7 @@ public abstract class CompatibilityTestBase {
         Files.writeString(file("build.gradle"), """
             plugins {
                 id('java-gradle-plugin')
-                id('org.gradle.plugin.devel.compatibility')
+                id('org.gradle.plugin-compatibility')
             }
 
             %s
@@ -138,7 +138,7 @@ public abstract class CompatibilityTestBase {
         Files.writeString(file(path), """
             plugins {
                 `java-gradle-plugin`
-                id("org.gradle.plugin.devel.compatibility")
+                id("org.gradle.plugin-compatibility")
             }
 
             %s

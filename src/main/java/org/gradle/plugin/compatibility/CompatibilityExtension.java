@@ -1,4 +1,4 @@
-package org.gradle.plugin.devel.compatibility;
+package org.gradle.plugin.compatibility;
 
 import org.gradle.api.Action;
 import org.gradle.api.Incubating;
@@ -15,10 +15,10 @@ import javax.inject.Inject;
  * <pre>
  * <i>// build.gradle.kts</i>
  * <i> Import is necessary in Kotlin Build Script </i>
- * import org.gradle.plugin.devel.compatibility.compatibility
+ * import org.gradle.plugin.compatibility.compatibility
  * plugins {
  *     `java-gradle-plugin`
- *     id("org.gradle.plugin.devel.compatibility") version "9.1.0"
+ *     id("org.gradle.plugin-compatibility") version "9.1.0"
  * }
  *
  * gradlePlugin {
@@ -43,7 +43,7 @@ import javax.inject.Inject;
  * <i>// build.gradle</i>
  * plugins {
  *     id("java-gradle-plugin")
- *     id("org.gradle.plugin.devel.compatibility") version "9.1.0"
+ *     id("org.gradle.plugin-compatibility") version "9.1.0"
  * }
  *
  * gradlePlugin {

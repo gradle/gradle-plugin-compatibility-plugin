@@ -35,7 +35,7 @@ class MultiProjectTest extends CompatibilityTestBase {
             """);
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -78,7 +78,7 @@ class MultiProjectTest extends CompatibilityTestBase {
             """);
 
         withKotlinBuildScript("plugin-a/build.gradle.kts", """
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -99,7 +99,7 @@ class MultiProjectTest extends CompatibilityTestBase {
         createTestPluginSource("plugin-a", "com.example", "PluginA");
 
         withKotlinBuildScript("plugin-b/build.gradle.kts", """            
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -142,7 +142,7 @@ class MultiProjectTest extends CompatibilityTestBase {
             """);
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {

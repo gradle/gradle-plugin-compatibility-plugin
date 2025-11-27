@@ -32,7 +32,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
         super.setUp();
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {

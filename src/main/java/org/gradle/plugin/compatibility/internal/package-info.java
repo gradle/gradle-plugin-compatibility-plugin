@@ -3,6 +3,6 @@
  * notice.
  */
 @NullMarked
-package org.gradle.plugin.devel.compatibility.internal;
+package org.gradle.plugin.compatibility.internal;
 
 import org.jspecify.annotations.NullMarked;

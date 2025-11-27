@@ -1,8 +1,8 @@
-import org.gradle.plugin.devel.compatibility.compatibility
+import org.gradle.plugin.compatibility.compatibility
 
 plugins {
     `java-gradle-plugin`
-    id("org.gradle.plugin.devel.compatibility") version "9.1.0"
+    id("org.gradle.plugin-compatibility") version "9.1.0"
 }
 
 gradlePlugin {
