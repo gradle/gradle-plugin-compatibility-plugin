@@ -3,7 +3,6 @@ plugins {
 }
 
 rootProject.name = "gradle-plugin-compatibility-plugin"
-includeBuild("example")
 
 develocity {
     server.set("https://ge.gradle.org")
