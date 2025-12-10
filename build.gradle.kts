@@ -19,6 +19,7 @@ plugins {
     `kotlin-dsl`
     `maven-publish`
     `jvm-test-suite`
+    checkstyle
 }
 
 group = "org.gradle.plugin"
@@ -150,7 +151,6 @@ configurations {
 }
 
 tasks {
-
     compileJava {
         options.release = 8
     }
