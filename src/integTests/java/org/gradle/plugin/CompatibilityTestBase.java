@@ -44,6 +44,8 @@ public abstract class CompatibilityTestBase {
     }
 
     private static Stream<GradleVersion> testedGradleVersions() {
+        // TODO(https://github.com/gradle/gradle-plugin-compatibility-plugin/issues/3) Figure out the strategy for
+        //  testing latest Gradle releases here (automatically?)
         Stream<GradleVersion> versions = Stream.of(
                 "7.4.2", // Oldest supported
                 "7.6.6", // Latest 7.x
