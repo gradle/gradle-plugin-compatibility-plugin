@@ -20,6 +20,7 @@ package org.gradle.plugin.compatibility.internal;
 import org.gradle.api.Action;
 import org.gradle.plugin.compatibility.CompatibilityExtension;
 import org.gradle.plugin.devel.PluginDeclaration;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,13 +30,13 @@ public class CompatibilityRegistry {
     private static final ConcurrentWeakIdentityHashMap<
             PluginDeclaration,
             List<Action<CompatibilityExtension>>
-            > featureConfigurators = new ConcurrentWeakIdentityHashMap<>();
+            > FEATURE_CONFIGURATORS = new ConcurrentWeakIdentityHashMap<>();
 
     public static void store(PluginDeclaration declaration, Action<? super CompatibilityExtension> action) {
-        featureConfigurators.computeIfAbsent(declaration, d -> new ArrayList<>()).add(action::execute);
+        FEATURE_CONFIGURATORS.computeIfAbsent(declaration, d -> new ArrayList<>()).add(action::execute);
     }
 
-    public static List<Action<CompatibilityExtension>> getForDeclaration(PluginDeclaration declaration) {
-        return featureConfigurators.getOrDefault(declaration, Collections.emptyList());
+    public static @Nullable List<Action<CompatibilityExtension>> getForDeclaration(PluginDeclaration declaration) {
+        return FEATURE_CONFIGURATORS.getOrDefault(declaration, Collections.emptyList());
     }
 }

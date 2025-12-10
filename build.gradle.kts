@@ -31,6 +31,8 @@ repositories {
 }
 
 dependencies {
+    api("org.jspecify:jspecify:1.0.0")
+
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0") {
         because("Needed for parsing the Gradle releases metadata JSON")
     }
@@ -155,11 +157,9 @@ tasks {
         options.release = 8
     }
 
-    compileTestJava {
-        javaCompiler = testCompiler
-    }
-
-    withType<JavaCompile>().matching { it.name == "compileIntegTestsJava" }.configureEach {
+    withType<JavaCompile>().matching {
+        it.name != "compileJava"
+    }.configureEach {
         javaCompiler = testCompiler
     }
 
@@ -170,5 +170,9 @@ tasks {
 
     check {
         dependsOn(testing.suites.named("integTests"))
+    }
+
+    register("checkstyle") {
+        dependsOn("checkstyleMain",  "checkstyleTest", "checkstyleIntegTests")
     }
 }

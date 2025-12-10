@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2010 the original author or authors.
+  ~ Copyright 2025 the original author or authors.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@
         "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
         "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
-    <module name="SuppressionFilter">
-        <property name="file" value="${config_loc}/suppressions.xml"/>
-    </module>
     <!-- allows suppressing using the @SuppressWarnings("checkstyle:...") -->
     <module name="SuppressWarningsFilter"/>
     <module name="TreeWalker">

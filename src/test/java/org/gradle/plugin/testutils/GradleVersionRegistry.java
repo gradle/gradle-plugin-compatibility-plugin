@@ -33,7 +33,8 @@ public class GradleVersionRegistry {
 
     private static final String ALL_VERSIONS_JSON = "https://services.gradle.org/versions/all";
 
-    private static List<GradleVersion> gradleVersions = null;
+    @Nullable
+    private static List<GradleVersion> gradleVersions;
 
     public static List<GradleVersion> getVersions(@Nullable GradleVersion from) {
         // This is a simple memoization to avoid fetching the versions multiple times
