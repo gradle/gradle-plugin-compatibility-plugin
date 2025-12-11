@@ -27,7 +27,7 @@ plugins {
 }
 
 group = "org.gradle.plugin"
-version = "9.1.0"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
