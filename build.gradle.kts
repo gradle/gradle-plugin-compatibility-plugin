@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+import net.ltgt.gradle.errorprone.errorprone
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
     `jvm-test-suite`
     checkstyle
+    id("net.ltgt.errorprone") version "4.3.0"
 }
 
 group = "org.gradle.plugin"
@@ -31,6 +35,9 @@ repositories {
 }
 
 dependencies {
+    errorprone("com.uber.nullaway:nullaway:0.12.14")
+    errorprone("com.google.errorprone:error_prone_core:2.45.0")
+
     api("org.jspecify:jspecify:1.0.0")
 
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0") {
@@ -46,41 +53,9 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.25.3")
 }
 
-configurations {
-    testCompileClasspath {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-
-    testRuntimeClasspath {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-}
-
 kotlin {
     // Also sets the Java toolchain
-    jvmToolchain(11)
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions {
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
-    }
-}
-
-val testCompiler = javaToolchains.compilerFor {
-    languageVersion.set(JavaLanguageVersion.of(17))
-}
-val testLauncher = javaToolchains.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(17))
-}
-val java8Launcher = javaToolchains.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(8))
+    jvmToolchain(21)
 }
 
 gradlePlugin {
@@ -90,6 +65,10 @@ gradlePlugin {
             implementationClass = "org.gradle.plugin.compatibility.internal.CompatibilityPlugin"
         }
     }
+}
+
+val java8Launcher = javaToolchains.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(8))
 }
 
 testing {
@@ -116,7 +95,6 @@ testing {
             targets {
                 all {
                     testTask.configure {
-                        javaLauncher = testLauncher
                         val pluginMetadata = tasks.named("pluginUnderTestMetadata")
                         dependsOn(pluginMetadata)
                         classpath += files(pluginMetadata)
@@ -126,7 +104,6 @@ testing {
                 // Java 8 target - runs tests with Java 8, skips Gradle 9+
                 register("java8") {
                     testTask.configure {
-                        javaLauncher = testLauncher
                         systemProperty("java8Home", java8Launcher.get().metadata.installationPath.asFile.absolutePath)
                         val pluginMetadata = tasks.named("pluginUnderTestMetadata")
                         dependsOn(pluginMetadata)
@@ -138,34 +115,23 @@ testing {
     }
 }
 
-configurations {
-    named("integTestsCompileClasspath") {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-
-    named("integTestsRuntimeClasspath") {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-}
-
 tasks {
     compileJava {
         options.release = 8
     }
 
-    withType<JavaCompile>().matching {
-        it.name != "compileJava"
-    }.configureEach {
-        javaCompiler = testCompiler
+    withType<JavaCompile>().configureEach {
+        options.errorprone {
+            option("NullAway:OnlyNullMarked", "true")
+        }
     }
 
-    test {
-        useJUnitPlatform()
-        javaLauncher = testLauncher
+    withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+        }
     }
 
     check {
