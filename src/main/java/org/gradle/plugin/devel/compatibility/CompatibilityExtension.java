@@ -1,4 +1,4 @@
-package org.gradle.plugin.devel;
+package org.gradle.plugin.devel.compatibility;
 
 import org.gradle.api.Action;
 import org.gradle.api.model.ObjectFactory;
