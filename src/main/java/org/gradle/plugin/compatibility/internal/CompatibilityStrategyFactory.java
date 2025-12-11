@@ -1,4 +1,4 @@
-package org.gradle.plugin.devel.compatibility.internal;
+package org.gradle.plugin.compatibility.internal;
 
 import org.gradle.util.GradleVersion;
 

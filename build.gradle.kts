@@ -67,8 +67,8 @@ val java8Launcher = javaToolchains.launcherFor {
 gradlePlugin {
     plugins {
         register("compatibility-plugin") {
-            id = "org.gradle.plugin.devel.compatibility"
-            implementationClass = "org.gradle.plugin.devel.compatibility.internal.CompatibilityPlugin"
+            id = "org.gradle.plugin-compatibility"
+            implementationClass = "org.gradle.plugin.compatibility.internal.CompatibilityPlugin"
         }
     }
 }

@@ -35,7 +35,7 @@ class MultiProjectTest extends CompatibilityTestBase {
             """);
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -78,7 +78,7 @@ class MultiProjectTest extends CompatibilityTestBase {
             """);
 
         withKotlinBuildScript("plugin-a/build.gradle.kts", """
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -99,7 +99,7 @@ class MultiProjectTest extends CompatibilityTestBase {
         createTestPluginSource("plugin-a", "com.example", "PluginA");
 
         withKotlinBuildScript("plugin-b/build.gradle.kts", """            
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -125,10 +125,10 @@ class MultiProjectTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("plugin-a", "com.example.plugin-a")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(NOT_SUPPORTED);
+                .hasIsolatedProjects(UNSUPPORTED);
 
         assertPluginDescriptor("plugin-b", "com.example.plugin-b")
-                .hasConfigurationCache(NOT_SUPPORTED)
+                .hasConfigurationCache(UNSUPPORTED)
                 .hasIsolatedProjects(SUPPORTED);
     }
 
@@ -142,7 +142,7 @@ class MultiProjectTest extends CompatibilityTestBase {
             """);
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -182,7 +182,7 @@ class MultiProjectTest extends CompatibilityTestBase {
 
         // Subproject plugin has no compatibility set - should be UNKNOWN
         assertPluginDescriptor("subproject", "com.example.sub-plugin")
-                .hasConfigurationCache(UNKNOWN)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasConfigurationCache(UNDECLARED)
+                .hasIsolatedProjects(UNDECLARED);
     }
 }

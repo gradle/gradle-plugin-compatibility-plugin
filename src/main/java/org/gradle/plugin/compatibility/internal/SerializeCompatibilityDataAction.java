@@ -1,4 +1,4 @@
-package org.gradle.plugin.devel.compatibility.internal;
+package org.gradle.plugin.compatibility.internal;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -10,9 +10,9 @@ import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.plugin.devel.PluginDeclaration;
-import org.gradle.plugin.devel.compatibility.CompatibleFeatures;
+import org.gradle.plugin.compatibility.CompatibilityDeclarationProtocol;
+import org.gradle.plugin.compatibility.CompatibleFeatures;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
-import org.jspecify.annotations.NullMarked;
 
 import javax.inject.Inject;
 import java.io.BufferedWriter;
@@ -24,10 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@NullMarked
 public abstract class SerializeCompatibilityDataAction implements Action<Task> {
-
-    public static final String SUPPORT_FLAG_PACKAGE = "compatibility.feature";
     private final ObjectFactory objectFactory;
     private final Provider<Directory> outputDirectory;
     private final Provider<Map<String, CompatibleFeatures>> compatibilityData;
@@ -94,16 +91,23 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
     private void addSupportedFlagsToPluginDescriptors(String pluginId, CompatibleFeatures features) throws GradleException {
         Path propertiesFile = outputDirectory.get().file(pluginId + ".properties").getAsFile().toPath();
         try (BufferedWriter writer = Files.newBufferedWriter(propertiesFile, StandardOpenOption.APPEND)) {
-            writeFeatureSupportLevel(writer, "configuration-cache", features.getConfigurationCache());
-            writeFeatureSupportLevel(writer, "isolated-projects", features.getIsolatedProjects());
+            writeFeatureSupportLevel(
+                    writer,
+                    CompatibilityDeclarationProtocol.FEATURE_CONFIGURATION_CACHE,
+                    features.getConfigurationCache()
+            );
+            writeFeatureSupportLevel(
+                    writer,
+                    CompatibilityDeclarationProtocol.FEATURE_ISOLATED_PROJECTS,
+                    features.getIsolatedProjects()
+            );
         } catch (IOException ex) {
             throw new GradleException("Failed to write supported features to " + propertiesFile, ex);
         }
     }
 
     private static void writeFeatureSupportLevel(BufferedWriter writer, String name, Property<Boolean> support) throws IOException {
-        writer.write(SUPPORT_FLAG_PACKAGE);
-        writer.write(".");
+        writer.write(CompatibilityDeclarationProtocol.SUPPORT_FLAGS_PREFIX);
         writer.write(name);
         writer.write("=");
         writer.write(toSupportLevel(support).get());
@@ -111,6 +115,10 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
     }
 
     private static Provider<String> toSupportLevel(Property<Boolean> property) {
-        return property.map(value -> value ? "SUPPORTED" : "NOT_SUPPORTED").orElse("UNKNOWN");
+        return property.map(
+                        value -> value
+                                ? CompatibilityDeclarationProtocol.DECLARED_SUPPORTED
+                                : CompatibilityDeclarationProtocol.DECLARED_UNSUPPORTED)
+                .orElse(CompatibilityDeclarationProtocol.UNDECLARED);
     }
 }

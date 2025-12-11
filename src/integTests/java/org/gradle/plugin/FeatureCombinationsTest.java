@@ -28,15 +28,15 @@ class FeatureCombinationsTest extends CompatibilityTestBase {
 
     @ParameterizedTest
     @CsvSource({
-            "true,      true,      SUPPORTED,      SUPPORTED",
-            "true,      false,     SUPPORTED,      NOT_SUPPORTED",
-            "false,     true,      NOT_SUPPORTED,  SUPPORTED",
-            "false,     false,     NOT_SUPPORTED,  NOT_SUPPORTED",
-            "true,      undefined, SUPPORTED,      UNKNOWN",
-            "false,     undefined, NOT_SUPPORTED,  UNKNOWN",
-            "undefined, true,      UNKNOWN,        SUPPORTED",
-            "undefined, false,     UNKNOWN,        NOT_SUPPORTED",
-            "undefined, undefined, UNKNOWN,        UNKNOWN"
+            "true,      true,      DECLARED_SUPPORTED,   DECLARED_SUPPORTED",
+            "true,      false,     DECLARED_SUPPORTED,   DECLARED_UNSUPPORTED",
+            "false,     true,      DECLARED_UNSUPPORTED, DECLARED_SUPPORTED",
+            "false,     false,     DECLARED_UNSUPPORTED, DECLARED_UNSUPPORTED",
+            "true,      undefined, DECLARED_SUPPORTED,   UNDECLARED",
+            "false,     undefined, DECLARED_UNSUPPORTED, UNDECLARED",
+            "undefined, true,      UNDECLARED,           DECLARED_SUPPORTED",
+            "undefined, false,     UNDECLARED,           DECLARED_UNSUPPORTED",
+            "undefined, undefined, UNDECLARED,           UNDECLARED"
     })
     @DisplayName("All feature combinations including undefined")
     void testAllFeatureCombinations(
@@ -50,7 +50,7 @@ class FeatureCombinationsTest extends CompatibilityTestBase {
         String featuresBlock = buildFeaturesBlock(ccValue, ipValue);
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {

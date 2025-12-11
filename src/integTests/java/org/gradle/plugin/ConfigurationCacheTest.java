@@ -37,7 +37,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
     @DisplayName("Configuration cache reused across builds")
     void configurationCacheReusedAcrossBuilds() throws IOException {
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -73,7 +73,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasIsolatedProjects(UNDECLARED);
     }
 
     @Test
@@ -83,7 +83,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         Assumptions.assumeThat(getGradleVersion()).isGreaterThanOrEqualTo(GradleVersion.version("8.7"));
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -107,7 +107,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         runGradle("jar");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNKNOWN);
+                .hasConfigurationCache(UNDECLARED);
 
         // Second run - the cache should not be invalidated
         var secondRun = runGradle("jar", "-Denable-cc=true");
@@ -127,14 +127,14 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
                 .contains("Reusing configuration cache.");  // Cache was not invalidated
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
     }
 
     @Test
     @DisplayName("Multiple plugins with configuration cache")
     void multiplePluginsWithConfigurationCache() throws IOException {
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -178,10 +178,10 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("com.example.plugin1")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasIsolatedProjects(UNDECLARED);
 
         assertPluginDescriptor("com.example.plugin2")
-                .hasConfigurationCache(UNKNOWN)
+                .hasConfigurationCache(UNDECLARED)
                 .hasIsolatedProjects(SUPPORTED);
     }
 }

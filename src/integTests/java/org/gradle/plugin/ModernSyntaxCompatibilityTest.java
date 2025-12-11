@@ -53,7 +53,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(NOT_SUPPORTED);
+                .hasIsolatedProjects(UNSUPPORTED);
     }
 
     @Test
@@ -61,7 +61,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
     void modernSyntaxKotlinDsl() throws IOException {
         withSettingsFile();
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -87,7 +87,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(NOT_SUPPORTED);
+                .hasIsolatedProjects(UNSUPPORTED);
     }
 
     @Test
@@ -117,7 +117,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(UNKNOWN)
+                .hasConfigurationCache(UNDECLARED)
                 .hasIsolatedProjects(SUPPORTED);
     }
 }

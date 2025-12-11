@@ -53,7 +53,7 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(NOT_SUPPORTED);
+                .hasIsolatedProjects(UNSUPPORTED);
     }
 
     @Test
@@ -83,7 +83,7 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasIsolatedProjects(UNDECLARED);
     }
 
     @Test
@@ -121,7 +121,7 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
         // named() block should override create() block
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(NOT_SUPPORTED)
+                .hasConfigurationCache(UNSUPPORTED)
                 .hasIsolatedProjects(SUPPORTED);
     }
 }

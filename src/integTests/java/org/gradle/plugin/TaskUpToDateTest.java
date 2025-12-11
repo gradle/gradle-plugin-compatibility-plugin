@@ -32,7 +32,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
         super.setUp();
 
         withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
+            import org.gradle.plugin.compatibility.compatibility
 
             gradlePlugin {
                 plugins {
@@ -71,7 +71,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasIsolatedProjects(UNDECLARED);
 
         // Second run with same property value - task should be up to date
         var secondRun = runGradle("jar", "-Denable-cc=true");
@@ -85,7 +85,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNKNOWN);
+                .hasIsolatedProjects(UNDECLARED);
     }
 
     @Test
@@ -96,7 +96,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertThat(firstRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNKNOWN);
+                .hasConfigurationCache(UNDECLARED);
 
         // Second run - the property changed to true
         var secondRun = runGradle("jar", "-Denable-cc=true");
@@ -124,7 +124,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         // Descriptor should be updated
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
 
         // Fourth run - the property changed back to undefined
         var fourthRun = runGradle("jar");
@@ -138,7 +138,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         // Descriptor should be updated
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNKNOWN);
+                .hasConfigurationCache(UNDECLARED);
     }
 
     @Test

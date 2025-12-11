@@ -62,7 +62,7 @@ class MultipleCompatibilityBlocksTest{
 
         // Last block wins
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
     }
 
         @Test
@@ -101,7 +101,7 @@ class MultipleCompatibilityBlocksTest{
 
         // named() block wins for configurationCache, isolatedProjects from create() is preserved
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED)
+                .hasConfigurationCache(UNSUPPORTED)
                 .hasIsolatedProjects(SUPPORTED);
         }
     }
@@ -149,7 +149,7 @@ class MultipleCompatibilityBlocksTest{
 
         // Last block wins
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
     }
 
         @Test
@@ -188,7 +188,7 @@ class MultipleCompatibilityBlocksTest{
 
         // named() block wins for configurationCache, isolatedProjects from create() is preserved
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED)
+                .hasConfigurationCache(UNSUPPORTED)
                 .hasIsolatedProjects(SUPPORTED);
         }
 
@@ -227,7 +227,7 @@ class MultipleCompatibilityBlocksTest{
 
         // named() block wins regardless of syntax
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(NOT_SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
         }
     }
 }

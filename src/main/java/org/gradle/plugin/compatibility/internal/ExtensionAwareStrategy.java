@@ -1,10 +1,10 @@
-package org.gradle.plugin.devel.compatibility.internal;
+package org.gradle.plugin.compatibility.internal;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
-import org.gradle.plugin.devel.compatibility.CompatibilityExtension;
-import org.gradle.plugin.devel.compatibility.CompatibleFeatures;
+import org.gradle.plugin.compatibility.CompatibilityExtension;
+import org.gradle.plugin.compatibility.CompatibleFeatures;
 import org.gradle.plugin.devel.PluginDeclaration;
 
 /**
