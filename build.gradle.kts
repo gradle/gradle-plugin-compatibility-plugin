@@ -102,7 +102,7 @@ testing {
                 }
 
                 // Java 8 target - runs tests with Java 8, skips Gradle 9+
-                register("java8") {
+                register("integTestsWithJava8") {
                     testTask.configure {
                         systemProperty("java8Home", java8Launcher.get().metadata.installationPath.asFile.absolutePath)
                         val pluginMetadata = tasks.named("pluginUnderTestMetadata")
