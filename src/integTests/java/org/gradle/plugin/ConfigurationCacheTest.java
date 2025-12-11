@@ -17,6 +17,7 @@
 package org.gradle.plugin;
 
 import org.assertj.core.api.Assumptions;
+import org.gradle.internal.impldep.com.google.errorprone.annotations.DoNotCall;
 import org.gradle.util.GradleVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -199,5 +200,44 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         assertPluginDescriptor("com.example.plugin2")
                 .hasConfigurationCache(UNDECLARED)
                 .hasIsolatedProjects(SUPPORTED);
+    }
+
+    @Test
+    @DisplayName("Print JVM version used in build")
+    void printJvmVersion() throws IOException {
+        withKotlinBuildScript("""
+            import org.gradle.plugin.devel.compatibility.compatibility
+
+            gradlePlugin {
+                plugins {
+                    create("testPlugin") {
+                        id = "org.gradle.test.plugin"
+                        implementationClass = "org.gradle.plugin.TestPlugin"
+                        compatibility {
+                            features {
+                                configurationCache.set(true)
+                            }
+                        }
+                    }
+                }
+            }
+
+            tasks.register("printJvmInfo") {
+                doLast {
+                    println("JVM Version: ${System.getProperty("java.version")}")
+                    println("JVM Vendor: ${System.getProperty("java.vendor")}")
+                    println("JVM Home: ${System.getProperty("java.home")}")
+                }
+            }
+            """);
+        createTestPluginSource();
+
+        var result = runGradle("printJvmInfo");
+
+        assertThat(result.getOutput())
+                .contains("BUILD SUCCESSFUL")
+                .contains("JVM Version:")
+                .contains("JVM Vendor:")
+                .contains("JVM Home:");
     }
 }
