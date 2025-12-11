@@ -19,9 +19,6 @@
 <module name="Checker">
     <!-- allows suppressing using the @SuppressWarnings("checkstyle:...") -->
     <module name="SuppressWarningsFilter"/>
-    <module name="SuppressionSingleFilter">
-        <property name="checks" value="InjectOnConstructorOfAbstractClass"/>
-    </module>
     <module name="TreeWalker">
         <!-- Blocks -->
         <module name="EmptyBlock">

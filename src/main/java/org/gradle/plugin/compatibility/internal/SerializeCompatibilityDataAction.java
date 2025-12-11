@@ -45,6 +45,7 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
     private final Provider<Directory> outputDirectory;
     private final Provider<Map<String, CompatibleFeatures>> compatibilityData;
 
+    @SuppressWarnings("InjectOnConstructorOfAbstractClass")
     @Inject
     public SerializeCompatibilityDataAction(ObjectFactory objectFactory, GeneratePluginDescriptors task) {
         this.objectFactory = objectFactory;
@@ -79,7 +80,7 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
         });
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"TypeParameterUnusedInFormals", "unchecked"})
     private static <T, U> T uncheckedCast(U object) {
         return (T) object;
     }
