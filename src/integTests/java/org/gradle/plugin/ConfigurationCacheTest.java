@@ -17,7 +17,6 @@
 package org.gradle.plugin;
 
 import org.assertj.core.api.Assumptions;
-import org.gradle.internal.impldep.com.google.errorprone.annotations.DoNotCall;
 import org.gradle.util.GradleVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
