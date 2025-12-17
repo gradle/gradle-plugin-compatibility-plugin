@@ -143,7 +143,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
                 .hasConfigurationCache(UNSUPPORTED);
 
         // Fourth run - the property changed back to undefined
-        var fourthRun = runGradle("jar");
+        runGradle("jar");
 
         assertThat(thirdRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertThat(thirdRun.task(":pluginDescriptors"))

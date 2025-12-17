@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class CompatibilityRegistry {
     private static final ConcurrentWeakIdentityHashMap<
@@ -36,7 +37,8 @@ public class CompatibilityRegistry {
         FEATURE_CONFIGURATORS.computeIfAbsent(declaration, d -> new ArrayList<>()).add(action::execute);
     }
 
-    public static @Nullable List<Action<CompatibilityExtension>> getForDeclaration(PluginDeclaration declaration) {
-        return FEATURE_CONFIGURATORS.getOrDefault(declaration, Collections.emptyList());
+    public static List<Action<CompatibilityExtension>> getForDeclaration(PluginDeclaration declaration) {
+        // This should never return null, as we provide a non-null default value
+        return Objects.requireNonNull(FEATURE_CONFIGURATORS.getOrDefault(declaration, Collections.emptyList()));
     }
 }

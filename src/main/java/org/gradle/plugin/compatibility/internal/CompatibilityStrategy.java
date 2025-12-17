@@ -21,6 +21,7 @@ import org.gradle.api.Project;
 import org.gradle.plugin.compatibility.CompatibilityExtension;
 import org.gradle.plugin.compatibility.CompatibleFeatures;
 import org.gradle.plugin.devel.PluginDeclaration;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Strategy for configuring and retrieving compatibility information from plugin declarations.
@@ -36,6 +37,7 @@ public interface CompatibilityStrategy {
     /**
      * Extracts compatibility features from the given plugin declaration.
      */
+    @Nullable
     CompatibleFeatures extractFeatures(PluginDeclaration declaration, Project project);
 
     /**

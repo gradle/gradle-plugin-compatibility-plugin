@@ -15,6 +15,7 @@
  */
 
 import net.ltgt.gradle.errorprone.errorprone
+import net.ltgt.gradle.nullaway.nullaway
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -24,6 +25,8 @@ plugins {
     `jvm-test-suite`
     checkstyle
     id("net.ltgt.errorprone") version "4.3.0"
+    id("net.ltgt.nullaway") version "2.3.0"
+    id("com.jaredsburrows.license") version "0.9.8"
 }
 
 group = "org.gradle.plugin"
@@ -35,8 +38,8 @@ repositories {
 }
 
 dependencies {
-    errorprone("com.uber.nullaway:nullaway:0.12.14")
     errorprone("com.google.errorprone:error_prone_core:2.45.0")
+    errorprone("com.uber.nullaway:nullaway:0.12.14")
 
     api("org.jspecify:jspecify:1.0.0")
 
@@ -122,7 +125,11 @@ tasks {
 
     withType<JavaCompile>().configureEach {
         options.errorprone {
-            option("NullAway:OnlyNullMarked", "true")
+            disable("InjectOnConstructorOfAbstractClass") // We use abstract injection as a pattern
+            nullaway {
+                error()
+                onlyNullMarked = true
+            }
         }
     }
 
@@ -139,6 +146,6 @@ tasks {
     }
 
     register("checkstyle") {
-        dependsOn("checkstyleMain",  "checkstyleTest", "checkstyleIntegTests")
+        dependsOn("checkstyleMain", "checkstyleTest", "checkstyleIntegTests")
     }
 }
