@@ -26,7 +26,6 @@ plugins {
     checkstyle
     id("net.ltgt.errorprone") version "4.3.0"
     id("net.ltgt.nullaway") version "2.3.0"
-    id("com.jaredsburrows.license") version "0.9.8"
 }
 
 group = "org.gradle.plugin"
