@@ -43,7 +43,7 @@ dependencies {
     errorprone("com.google.errorprone:error_prone_core:2.42.0")
     errorprone("com.uber.nullaway:nullaway:0.12.14")
 
-    api("org.jspecify:jspecify:1.0.0")
+    compileOnly("org.jspecify:jspecify:1.0.0")
 
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0") {
         because("Needed for parsing the Gradle releases metadata JSON")
@@ -107,7 +107,7 @@ testing {
                 }
 
                 // Java 8 target - runs tests with Java 8, skips Gradle 9+
-                register("integTestsWithJava8") {
+                register("java8IntegTest") {
                     testTask.configure {
                         systemProperty("java8Home", java8Launcher.get().metadata.installationPath.asFile.absolutePath)
                         val pluginMetadata = tasks.named("pluginUnderTestMetadata")
