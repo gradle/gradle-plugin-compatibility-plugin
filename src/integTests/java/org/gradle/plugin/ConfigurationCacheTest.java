@@ -200,43 +200,4 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
                 .hasConfigurationCache(UNDECLARED)
                 .hasIsolatedProjects(SUPPORTED);
     }
-
-    @Test
-    @DisplayName("Print JVM version used in build")
-    void printJvmVersion() throws IOException {
-        withKotlinBuildScript("""
-            import org.gradle.plugin.devel.compatibility.compatibility
-
-            gradlePlugin {
-                plugins {
-                    create("testPlugin") {
-                        id = "org.gradle.test.plugin"
-                        implementationClass = "org.gradle.plugin.TestPlugin"
-                        compatibility {
-                            features {
-                                configurationCache.set(true)
-                            }
-                        }
-                    }
-                }
-            }
-
-            tasks.register("printJvmInfo") {
-                doLast {
-                    println("JVM Version: ${System.getProperty("java.version")}")
-                    println("JVM Vendor: ${System.getProperty("java.vendor")}")
-                    println("JVM Home: ${System.getProperty("java.home")}")
-                }
-            }
-            """);
-        createTestPluginSource();
-
-        var result = runGradle("printJvmInfo");
-
-        assertThat(result.getOutput())
-                .contains("BUILD SUCCESSFUL")
-                .contains("JVM Version:")
-                .contains("JVM Vendor:")
-                .contains("JVM Home:");
-    }
 }
