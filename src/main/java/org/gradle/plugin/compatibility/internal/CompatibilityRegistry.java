@@ -20,7 +20,7 @@ package org.gradle.plugin.compatibility.internal;
 import org.gradle.api.Action;
 import org.gradle.plugin.compatibility.CompatibilityExtension;
 import org.gradle.plugin.devel.PluginDeclaration;
-import org.jspecify.annotations.Nullable;
+import org.gradle.plugin.devel.compatibility.CompatibilityExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
