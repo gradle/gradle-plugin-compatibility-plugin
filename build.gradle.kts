@@ -37,7 +37,10 @@ repositories {
 }
 
 dependencies {
-    errorprone("com.google.errorprone:error_prone_core:2.45.0")
+    // We are stuck on 2.42.0, because
+    //  - Grade 7.4.2 (our oldest cross-version test target) can only use maximum JDK 17
+    //  - ErrorProne 2.42.0+ required JDK 21
+    errorprone("com.google.errorprone:error_prone_core:2.42.0")
     errorprone("com.uber.nullaway:nullaway:0.12.14")
 
     api("org.jspecify:jspecify:1.0.0")
@@ -57,7 +60,7 @@ dependencies {
 
 kotlin {
     // Also sets the Java toolchain
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 gradlePlugin {
@@ -118,10 +121,6 @@ testing {
 }
 
 tasks {
-    compileJava {
-        options.release = 8
-    }
-
     withType<JavaCompile>().configureEach {
         options.errorprone {
             disable("InjectOnConstructorOfAbstractClass") // We use abstract injection as a pattern
