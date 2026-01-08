@@ -30,6 +30,7 @@ class ConcurrentWeakIdentityHashMapTest {
 
     @Test
     @DisplayName("should use identity comparison for keys, not equals()")
+    @SuppressWarnings("NullAway")
     void shouldUseIdentityComparison() {
         ConcurrentWeakIdentityHashMap<CustomKey, String> map = new ConcurrentWeakIdentityHashMap<>();
 
@@ -55,6 +56,7 @@ class ConcurrentWeakIdentityHashMapTest {
 
     @Test
     @DisplayName("should return same value for identical key references")
+    @SuppressWarnings("NullAway")
     void shouldReturnSameValueForIdenticalKeys() {
         ConcurrentWeakIdentityHashMap<CustomKey, String> map = new ConcurrentWeakIdentityHashMap<>();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 the original author or authors.
+ * Copyright 2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class ConcurrentWeakIdentityHashMap<K, V> {
      * @param defaultValue the value to return if no mapping exists
      * @return the value associated with the key, or the default value
      */
-    public V getOrDefault(K key, V defaultValue) {
+    public @Nullable V getOrDefault(K key, @Nullable V defaultValue) {
         cleanStaleRefs();
         return map.getOrDefault(new WeakKeyReference(key), defaultValue);
     }
