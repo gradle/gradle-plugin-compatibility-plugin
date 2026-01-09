@@ -1,12 +1,35 @@
+/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import net.ltgt.gradle.errorprone.errorprone
+import net.ltgt.gradle.nullaway.nullaway
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
     `jvm-test-suite`
+    checkstyle
+    id("net.ltgt.errorprone") version "4.3.0"
+    id("net.ltgt.nullaway") version "2.3.0"
 }
 
 group = "org.gradle.plugin"
-version = "9.1.0"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
@@ -14,6 +37,12 @@ repositories {
 }
 
 dependencies {
+    // We are stuck on 2.42.0, because
+    //  - Grade 7.4.2 (our oldest cross-version test target) can only use maximum JDK 17
+    //  - ErrorProne 2.42.0+ required JDK 21
+    errorprone("com.google.errorprone:error_prone_core:2.42.0")
+    errorprone("com.uber.nullaway:nullaway:0.12.14")
+
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0") {
         because("Needed for parsing the Gradle releases metadata JSON")
     }
@@ -27,41 +56,9 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.25.3")
 }
 
-configurations {
-    testCompileClasspath {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-
-    testRuntimeClasspath {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-}
-
 kotlin {
     // Also sets the Java toolchain
-    jvmToolchain(11)
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions {
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
-    }
-}
-
-val testCompiler = javaToolchains.compilerFor {
-    languageVersion.set(JavaLanguageVersion.of(17))
-}
-val testLauncher = javaToolchains.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(17))
-}
-val java8Launcher = javaToolchains.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(8))
+    jvmToolchain(17)
 }
 
 gradlePlugin {
@@ -71,6 +68,10 @@ gradlePlugin {
             implementationClass = "org.gradle.plugin.compatibility.internal.CompatibilityPlugin"
         }
     }
+}
+
+val java8Launcher = javaToolchains.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(8))
 }
 
 testing {
@@ -97,7 +98,6 @@ testing {
             targets {
                 all {
                     testTask.configure {
-                        javaLauncher = testLauncher
                         val pluginMetadata = tasks.named("pluginUnderTestMetadata")
                         dependsOn(pluginMetadata)
                         classpath += files(pluginMetadata)
@@ -105,9 +105,8 @@ testing {
                 }
 
                 // Java 8 target - runs tests with Java 8, skips Gradle 9+
-                register("java8") {
+                register("java8IntegTest") {
                     testTask.configure {
-                        javaLauncher = testLauncher
                         systemProperty("java8Home", java8Launcher.get().metadata.installationPath.asFile.absolutePath)
                         val pluginMetadata = tasks.named("pluginUnderTestMetadata")
                         dependsOn(pluginMetadata)
@@ -119,40 +118,35 @@ testing {
     }
 }
 
-configurations {
-    named("integTestsCompileClasspath") {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-
-    named("integTestsRuntimeClasspath") {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
-        }
-    }
-}
-
 tasks {
-
     compileJava {
         options.release = 8
     }
 
-    compileTestJava {
-        javaCompiler = testCompiler
+    withType<JavaCompile>().configureEach {
+        options.errorprone {
+            disable("InjectOnConstructorOfAbstractClass") // We use abstract injection as a pattern
+            disable("EqualsGetClass") // We have complex inner types where getClass makes sense
+            nullaway {
+                error()
+                onlyNullMarked = true
+            }
+        }
     }
 
-    withType<JavaCompile>().matching { it.name == "compileIntegTestsJava" }.configureEach {
-        javaCompiler = testCompiler
-    }
-
-    test {
-        useJUnitPlatform()
-        javaLauncher = testLauncher
+    withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+        }
     }
 
     check {
         dependsOn(testing.suites.named("integTests"))
+    }
+
+    register("checkstyle") {
+        dependsOn("checkstyleMain", "checkstyleTest", "checkstyleIntegTests")
     }
 }

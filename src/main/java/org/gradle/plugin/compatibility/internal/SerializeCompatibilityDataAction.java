@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.gradle.plugin.compatibility.internal;
 
 import org.gradle.api.Action;
@@ -9,9 +25,9 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
-import org.gradle.plugin.devel.PluginDeclaration;
 import org.gradle.plugin.compatibility.CompatibilityDeclarationProtocol;
 import org.gradle.plugin.compatibility.CompatibleFeatures;
+import org.gradle.plugin.devel.PluginDeclaration;
 import org.gradle.plugin.devel.tasks.GeneratePluginDescriptors;
 
 import javax.inject.Inject;
@@ -29,6 +45,7 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
     private final Provider<Directory> outputDirectory;
     private final Provider<Map<String, CompatibleFeatures>> compatibilityData;
 
+    @SuppressWarnings("InjectOnConstructorOfAbstractClass")
     @Inject
     public SerializeCompatibilityDataAction(ObjectFactory objectFactory, GeneratePluginDescriptors task) {
         this.objectFactory = objectFactory;
@@ -63,7 +80,7 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
         });
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"TypeParameterUnusedInFormals", "unchecked"})
     private static <T, U> T uncheckedCast(U object) {
         return (T) object;
     }

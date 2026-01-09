@@ -1,3 +1,7 @@
+# Gradle specific files
 .gradle/
-.idea/
 **/build/
+
+.idea/*
+!.idea/codeStyles/
+!.idea/copyright/
