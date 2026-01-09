@@ -28,3 +28,4 @@ test-junit-platform-launcher = { module = "org.junit.platform:junit-platform-lau
 [plugins]
 errorprone = "net.ltgt.errorprone:4.3.0"
 nullaway = "net.ltgt.nullaway:2.3.0"
+pluginPublish = "com.gradle.plugin-publish:2.0.0"

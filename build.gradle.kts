@@ -27,9 +27,11 @@ plugins {
     `kotlin-dsl`
     `maven-publish`
     checkstyle
+    signing
 
     alias(libs.plugins.errorprone)
     alias(libs.plugins.nullaway)
+    alias(libs.plugins.pluginPublish)
 }
 
 group = "org.gradle.plugin"
@@ -50,13 +52,39 @@ kotlin {
 }
 
 gradlePlugin {
+    website = "https://github.com/gradle/compatibility-plugin"
+    vcsUrl = "https://github.com/gradle/compatibility-plugin.git"
+
     plugins {
-        register("compatibility-plugin") {
+        register("compatibilityPlugin") {
             id = "org.gradle.plugin-compatibility"
             implementationClass = "org.gradle.plugin.compatibility.internal.CompatibilityPlugin"
+            displayName = "Gradle Plugin Compatibility Plugin"
+            description = "Adds compatibility metadata to Gradle plugins for display on the Plugin Portal"
+            tags = listOf("gradle", "plugin", "compatibility")
         }
     }
     // TODO(mlopatkin) Apply the plugin and define its compatibility.
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "staging"
+            url = uri(layout.buildDirectory.dir("staging-repo"))
+        }
+    }
+}
+
+signing {
+    // Use in-memory ASCII-armored keys from environment variables
+    val signingKey = providers.environmentVariable("SIGNING_KEY")
+    val signingPassword = providers.environmentVariable("SIGNING_PASSWORD")
+
+    if (signingKey.isPresent && signingPassword.isPresent) {
+        useInMemoryPgpKeys(signingKey.get(), signingPassword.get())
+        sign(publishing.publications)
+    }
 }
 
 testing {
