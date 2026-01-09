@@ -57,7 +57,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Run unit tests
-        run: ./gradlew test --stacktrace
+        run: ./gradlew -s test
 
       - name: Upload test results
         if: always()
@@ -93,7 +93,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Run integration tests
-        run: ./gradlew integTests --stacktrace
+        run: ./gradlew -s integTests
 
       - name: Upload test results
         if: always()
@@ -135,7 +135,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Run integration tests with Java 8
-        run: ./gradlew integTestsWithJava8 --stacktrace
+        run: ./gradlew -s java8IntegTest
 
       - name: Upload test results
         if: always()
