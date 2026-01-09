@@ -31,7 +31,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Build project
-        run: ./gradlew build --stacktrace
+        run: ./gradlew build --stacktrace --console=colored
 
   unit-tests:
     name: Unit Tests (JDK 21)
