@@ -43,8 +43,6 @@ dependencies {
     errorprone("com.google.errorprone:error_prone_core:2.42.0")
     errorprone("com.uber.nullaway:nullaway:0.12.14")
 
-    compileOnly("org.jspecify:jspecify:1.0.0")
-
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0") {
         because("Needed for parsing the Gradle releases metadata JSON")
     }
@@ -121,9 +119,14 @@ testing {
 }
 
 tasks {
+    compileJava {
+        options.release = 8
+    }
+
     withType<JavaCompile>().configureEach {
         options.errorprone {
             disable("InjectOnConstructorOfAbstractClass") // We use abstract injection as a pattern
+            disable("EqualsGetClass") // We have complex inner types where getClass makes sense
             nullaway {
                 error()
                 onlyNullMarked = true
