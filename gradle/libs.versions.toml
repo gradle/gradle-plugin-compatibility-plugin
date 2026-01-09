@@ -1,0 +1,30 @@
+[versions]
+# Project configuration
+project = "0.1.0"
+# JDK used for compilation
+jvm-compileJdk = "17"
+# Target Java version for production code
+jvm-productionTarget = "8"
+# Target Java version for test code
+jvm-testTarget = "17"
+
+[libraries]
+# Build dependencies
+# We are stuck on 2.42.0, because
+#  - Grade 7.4.2 (our oldest cross-version test target) can only use maximum JDK 17
+#  - ErrorProne 2.42.0+ required JDK 21
+build-errorprone = "com.google.errorprone:error_prone_core:2.42.0"
+build-nullaway = "com.uber.nullaway:nullaway:0.12.14"
+
+# Test dependencies
+test-assertj-core = "org.assertj:assertj-core:3.25.3"
+test-jackson-databind = "com.fasterxml.jackson.core:jackson-databind:2.20.0"
+test-junit-bom = "org.junit:junit-bom:6.0.0"
+test-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+test-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params" }
+test-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+[plugins]
+errorprone = "net.ltgt.errorprone:4.3.0"
+nullaway = "net.ltgt.nullaway:2.3.0"

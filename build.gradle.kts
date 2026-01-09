@@ -16,8 +16,8 @@
 
 import net.ltgt.gradle.errorprone.errorprone
 import net.ltgt.gradle.nullaway.nullaway
-import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -28,29 +28,25 @@ plugins {
     `maven-publish`
     checkstyle
 
-    id("net.ltgt.errorprone") version "4.3.0"
-    id("net.ltgt.nullaway") version "2.3.0"
+    alias(libs.plugins.errorprone)
+    alias(libs.plugins.nullaway)
 }
 
 group = "org.gradle.plugin"
-version = "0.1.0"
+version = libs.versions.project.get()
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
-    // We are stuck on 2.42.0, because
-    //  - Grade 7.4.2 (our oldest cross-version test target) can only use maximum JDK 17
-    //  - ErrorProne 2.42.0+ required JDK 21
-    errorprone("com.google.errorprone:error_prone_core:2.42.0")
-    errorprone("com.uber.nullaway:nullaway:0.12.14")
+    errorprone(libs.build.errorprone)
+    errorprone(libs.build.nullaway)
 }
 
 kotlin {
     // Set up the JDK used to compile Java and Kotlin code.
-    jvmToolchain(17)
+    jvmToolchain(libs.versions.jvm.compileJdk)
 }
 
 gradlePlugin {
@@ -63,28 +59,25 @@ gradlePlugin {
     // TODO(mlopatkin) Apply the plugin and define its compatibility.
 }
 
-val java8Launcher = javaToolchains.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(8))
-}
-
 testing {
     suites {
         withType<JvmTestSuite>().configureEach {
             useJUnitJupiter()
 
             dependencies {
-                implementation(platform("org.junit:junit-bom:6.0.0"))
-                implementation("org.junit.jupiter:junit-jupiter-api")
-                implementation("org.junit.jupiter:junit-jupiter-params")
-                runtimeOnly("org.junit.jupiter:junit-jupiter-engine")
-                runtimeOnly("org.junit.platform:junit-platform-launcher")
-                implementation("org.assertj:assertj-core:3.25.3")
+                implementation(libs.test.assertj.core)
+                implementation(platform(libs.test.junit.bom))
+                implementation(libs.test.junit.jupiter.api)
+                implementation(libs.test.junit.jupiter.params)
+
+                runtimeOnly(libs.test.junit.jupiter.engine)
+                runtimeOnly(libs.test.junit.platform.launcher)
             }
         }
 
         named<JvmTestSuite>("test") {
             dependencies {
-                implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")  {
+                implementation(libs.test.jackson.databind)  {
                     because("Needed for parsing the Gradle releases metadata JSON")
                 }
             }
@@ -105,6 +98,10 @@ testing {
                     }
                 }
 
+                val java8Launcher = javaToolchains.launcherFor {
+                    languageVersion(libs.versions.jvm.productionTarget)
+                }
+
                 // Java 8 target - runs tests with Java 8, skips Gradle 9+
                 register("java8IntegTest") {
                     testTask.configure {
@@ -123,7 +120,7 @@ testing {
 tasks {
     compileJava {
         // Compile production code to Java 8 bytecode with Java 8 APIs
-        options.release = 8
+        options.release(libs.versions.jvm.productionTarget)
     }
 
     withType<JavaCompile>().configureEach {
@@ -152,4 +149,17 @@ tasks {
     register("checkstyle") {
         dependsOn("checkstyleMain", "checkstyleTest", "checkstyleIntegTests")
     }
+}
+
+
+fun KotlinJvmProjectExtension.jvmToolchain(version: Provider<out String>) {
+    this.jvmToolchain(version.get().toInt())
+}
+
+fun JavaToolchainSpec.languageVersion(version: Provider<out String>) {
+    this.languageVersion = version.map(JavaLanguageVersion::of)
+}
+
+fun CompileOptions.release(version: Provider<out String>) {
+    this.release.set(version.get().toInt())
 }
