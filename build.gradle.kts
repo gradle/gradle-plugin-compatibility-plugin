@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
     `java-gradle-plugin`
@@ -35,7 +36,12 @@ plugins {
 }
 
 group = "org.gradle.plugin"
-version = libs.versions.project.get()
+
+val shouldPublishAsSnapshot = providers.gradleProperty("publishSnapshot").map { it.toBoolean() }.orElse(true)
+
+version = libs.versions.project.zip(shouldPublishAsSnapshot) {
+    versionString, isSnapshot -> if (isSnapshot) "$versionString-SNAPSHOT" else versionString
+}.get()
 
 repositories {
     mavenCentral()
@@ -71,19 +77,36 @@ publishing {
     repositories {
         maven {
             name = "staging"
-            url = uri(layout.buildDirectory.dir("staging-repo"))
+
+            val stagingRepoUrl = providers.environmentVariable("GRADLE_INTERNAL_REPO_URL")
+                .map { URI("$it/libs-snapshots-local") }
+                .orElse(uri(layout.buildDirectory.dir("staging-repo")))
+
+            url = stagingRepoUrl.get()
+
+            var usernameProvider = providers.environmentVariable("INTERNAL_REPO_USERNAME")
+            var passwordProvider = providers.environmentVariable("INTERNAL_REPO_PASSWORD")
+
+            if (usernameProvider.isPresent && passwordProvider.isPresent) {
+                credentials {
+                    username = usernameProvider.get()
+                    password = passwordProvider.get()
+                }
+            }
         }
     }
 }
 
 signing {
     // Use in-memory ASCII-armored keys from environment variables
-    val signingKey = providers.environmentVariable("SIGNING_KEY")
-    val signingPassword = providers.environmentVariable("SIGNING_PASSWORD")
+    val signingKey = providers.environmentVariable("PGP_SIGNING_KEY")
+    val signingPassword = providers.environmentVariable("PGP_SIGNING_KEY_PASSPHRASE")
 
     if (signingKey.isPresent && signingPassword.isPresent) {
         useInMemoryPgpKeys(signingKey.get(), signingPassword.get())
         sign(publishing.publications)
+    } else {
+        tasks.withType<Sign>().configureEach { enabled = false }
     }
 }
 
@@ -171,6 +194,14 @@ tasks {
             apiVersion = KotlinVersion.KOTLIN_1_8
             // Compile production code to Java 8 bytecode
             jvmTarget = JvmTarget.JVM_1_8
+        }
+    }
+
+    publishPlugins {
+        val isSnapshot = shouldPublishAsSnapshot
+
+        onlyIf("Cannot publish snapshots to the plugin portal") {
+            !isSnapshot.get()
         }
     }
 
