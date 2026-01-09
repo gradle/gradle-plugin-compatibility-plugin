@@ -27,8 +27,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-        with:
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Build project
         run: ./gradlew --stacktrace --console=colored build
