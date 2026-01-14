@@ -97,7 +97,7 @@ object Verify : AbstractBuildType({
             publisher = github {
                 githubUrl = "https://api.github.com"
                 authType = personalToken {
-                    token = "%github.bot-teamcity.token%"
+                    token = "%github.bot-gradle.token%"
                 }
             }
         }
