@@ -24,7 +24,7 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
-private val vcsRoot = AbsoluteId("GradlePlugins_GradlePluginCompatibilityPlugin_Main")
+private val vcsRoot = AbsoluteId("GradlePluginCompatibilityPlugin")
 
 object Project : Project({
     buildType(Verify)
