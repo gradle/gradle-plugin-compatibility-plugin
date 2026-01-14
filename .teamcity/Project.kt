@@ -75,7 +75,7 @@ object Verify : AbstractBuildType({
     triggers {
         vcs {
             branchFilter = """
-                +:refs/heads/*
+                +:*
                 """.trimIndent()
         }
     }
