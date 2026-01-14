@@ -32,8 +32,7 @@ object Project : Project({
     buildType(ReleaseSnapshot)
 
     params {
-        // TODO(mlopatkin): provide the access key here
-        // param("env.DEVELOCITY_ACCESS_KEY", "!awssm://teamcity/gradle-org-conventions-plugin/_all/DEVELOCITY_ACCESS_KEY")
+         param("env.DEVELOCITY_ACCESS_KEY", "%ge.gradle.org.access.key%")
     }
 })
 
