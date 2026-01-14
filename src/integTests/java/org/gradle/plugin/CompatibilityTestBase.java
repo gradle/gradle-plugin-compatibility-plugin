@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gradle.plugin.compatibility.internal.CompatibilityStrategyFactory.EXTENSION_AWARE_MIN_VERSION;
+import static org.gradle.plugin.compatibility.internal.CompatibilityStrategy.EXTENSION_AWARE_MIN_VERSION;
 
 /**
  * Base class for compatibility plugin integration tests.

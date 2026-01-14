@@ -20,7 +20,6 @@ import groovy.lang.Closure;
 import org.gradle.api.Project;
 import org.gradle.plugin.devel.PluginDeclaration;
 import org.gradle.plugin.compatibility.internal.CompatibilityStrategy;
-import org.gradle.plugin.compatibility.internal.CompatibilityStrategyFactory;
 import org.jspecify.annotations.Nullable;
 
 import javax.inject.Inject;
@@ -65,8 +64,8 @@ public abstract class CompatibilityProjectExtension extends Closure<@Nullable Vo
     @SuppressWarnings("unused") // Groovy magic
     public @Nullable Void doCall(PluginDeclaration declaration, Closure<?> configuration) {
         Project owner = getOwner();
-        CompatibilityStrategy strategy = CompatibilityStrategyFactory.getStrategy();
-        strategy.configure(declaration, owner, extension -> owner.configure(extension, configuration));
+        CompatibilityStrategy strategy = CompatibilityStrategy.getInstance();
+        strategy.configure(declaration, extension -> owner.configure(extension, configuration));
         return null;
     }
 

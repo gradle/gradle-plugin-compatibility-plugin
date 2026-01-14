@@ -21,7 +21,6 @@ import org.gradle.api.Project;
 import org.gradle.plugin.compatibility.CompatibilityExtension;
 import org.gradle.plugin.compatibility.CompatibleFeatures;
 import org.gradle.plugin.devel.PluginDeclaration;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Strategy for Gradle < 8.14 where PluginDeclaration does not implement ExtensionAware.
@@ -36,7 +35,6 @@ class RegistryStrategy implements CompatibilityStrategy {
     }
 
     @Override
-    @Nullable
     public CompatibleFeatures extractFeatures(PluginDeclaration declaration, Project project) {
         CompatibilityExtension extension = project.getObjects().newInstance(CompatibilityExtension.class);
 
@@ -48,7 +46,7 @@ class RegistryStrategy implements CompatibilityStrategy {
     }
 
     @Override
-    public void configure(PluginDeclaration declaration, Project project, Action<CompatibilityExtension> configuration) {
+    public void configure(PluginDeclaration declaration, Action<? super CompatibilityExtension> configuration) {
         CompatibilityRegistry.store(declaration, configuration);
     }
 }

@@ -19,22 +19,16 @@ package org.gradle.plugin.compatibility.internal;
 import org.gradle.util.GradleVersion;
 
 /**
- * Factory for selecting the appropriate compatibility strategy based on the Gradle version.
+ * Lazy holder for the singleton. Use {@link CompatibilityStrategy#getInstance()} to get the strategy.
  */
-public class CompatibilityStrategyFactory {
-    public static final GradleVersion EXTENSION_AWARE_MIN_VERSION = GradleVersion.version("8.14");
+class CompatibilityStrategyHolder {
+    public static final CompatibilityStrategy INSTANCE = createStrategy();
 
-    private static final CompatibilityStrategy EXTENSION_AWARE_STRATEGY = new ExtensionAwareStrategy();
-    private static final CompatibilityStrategy REGISTRY_STRATEGY = new RegistryStrategy();
-
-    /**
-     * Returns the appropriate strategy for the current Gradle version.
-     */
-    public static CompatibilityStrategy getStrategy() {
-        if (GradleVersion.current().compareTo(EXTENSION_AWARE_MIN_VERSION) >= 0) {
-            return EXTENSION_AWARE_STRATEGY;
+    private static CompatibilityStrategy createStrategy() {
+        if (GradleVersion.current().compareTo(CompatibilityStrategy.EXTENSION_AWARE_MIN_VERSION) >= 0) {
+            return new ExtensionAwareStrategy();
         } else {
-            return REGISTRY_STRATEGY;
+            return new RegistryStrategy();
         }
     }
 }

@@ -50,7 +50,7 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
     public SerializeCompatibilityDataAction(ObjectFactory objectFactory, GeneratePluginDescriptors task) {
         this.objectFactory = objectFactory;
         Project project = task.getProject();
-        CompatibilityStrategy strategy = CompatibilityStrategyFactory.getStrategy();
+        CompatibilityStrategy strategy = CompatibilityStrategy.getInstance();
         outputDirectory = task.getOutputDirectory();
         compatibilityData = project.provider(() ->
                 task.getDeclarations()
