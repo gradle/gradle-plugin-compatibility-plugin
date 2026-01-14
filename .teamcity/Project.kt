@@ -159,7 +159,9 @@ object ReleaseSnapshot : AbstractBuildType({
     steps {
         gradle {
             useGradleWrapper = true
-            gradleParams = buildGradleParams()
+            gradleParams = buildGradleParams(
+                "-PpublishSnapshot=true"
+            )
             tasks = "publish"
         }
     }

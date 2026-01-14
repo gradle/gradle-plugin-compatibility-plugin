@@ -84,8 +84,8 @@ publishing {
 
             url = stagingRepoUrl.get()
 
-            var usernameProvider = providers.environmentVariable("INTERNAL_REPO_USERNAME")
-            var passwordProvider = providers.environmentVariable("INTERNAL_REPO_PASSWORD")
+            var usernameProvider = providers.environmentVariable("GRADLE_INTERNAL_REPO_USERNAME")
+            var passwordProvider = providers.environmentVariable("GRADLE_INTERNAL_REPO_PASSWORD")
 
             if (usernameProvider.isPresent && passwordProvider.isPresent) {
                 credentials {
