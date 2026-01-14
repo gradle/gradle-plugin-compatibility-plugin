@@ -80,6 +80,7 @@
          <trusted-key id="7186BBF993566D8C2F4F7ED7D945E643368FEF62" group="io.github.eisop" name="dataflow-errorprone"/>
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs" name="jsr305"/>
          <trusted-key id="76E94E8FF0AB5AF3B6F8366972FEFD1572EB75E1" group="org.spockframework"/>
+         <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
          <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671" group="com.gradle" name="develocity-gradle-plugin"/>
          <trusted-key id="808D78B17A5A2D7C3668E31FBFFC9B54721244AD" group="org.apache.commons" name="commons-parent"/>
          <trusted-key id="84789D24DF77A32433CE1F079EB80E92EB2135B1" group="org.apache" name="apache"/>
@@ -128,6 +129,11 @@
       </trusted-keys>
    </configuration>
    <components>
+      <component group="io.github.gradle" name="gradle-org-conventions-plugin" version="0.13.0">
+         <artifact name="gradle-org-conventions-plugin-0.13.0.jar">
+            <sha512 value="321532c0ad8f577266a8a66822ab9c993fa1aa6f166803e89bbd2aa2a0959618cb67a5d027d0f6eff0a4a76cb1a6af98d8916291378c9227e1e8faaad8fda0b0" origin="Verified" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
       <component group="javax.inject" name="javax.inject" version="1">
          <artifact name="javax.inject-1.jar">
             <sha512 value="e126b7ccf3e42fd1984a0beef1004a7269a337c202e59e04e8e2af714280d2f2d8d2ba5e6f59481b8dcd34aaf35c966a688d0b48ec7e96f102c274dc0d3b381e" origin="Verified" reason="Artifact is not signed"/>

@@ -15,11 +15,8 @@
  */
 
 plugins {
-    id("com.gradle.develocity") version("4.2")
+    id("com.gradle.develocity") version "4.2.2"
+    id("io.github.gradle.develocity-conventions-plugin") version "0.13.0"
 }
 
 rootProject.name = "compatibility-plugin"
-
-develocity {
-    server.set("https://ge.gradle.org")
-}

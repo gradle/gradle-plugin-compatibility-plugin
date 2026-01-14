@@ -40,6 +40,10 @@ private val defaultGradleParameters = listOf(
     "-Dorg.gradle.java.installations.auto-download=false",
     "-Dorg.gradle.java.installations.auto-detect=false",
     "-Dorg.gradle.java.installations.fromEnv=JAVA_HOME,JDK8",
+    // TODO(mlopatkin): Remove after upgrading to Gradle 9.2+
+    "-Porg.gradle.java.installations.auto-download=false",
+    "-Porg.gradle.java.installations.auto-detect=false",
+    "-Porg.gradle.java.installations.fromEnv=JAVA_HOME,JDK8",
 )
 
 private fun buildGradleParams(vararg extraParams: String) = buildList {
@@ -159,7 +163,9 @@ object ReleaseSnapshot : AbstractBuildType({
     steps {
         gradle {
             useGradleWrapper = true
-            gradleParams = buildGradleParams()
+            gradleParams = buildGradleParams(
+                "-PpublishSnapshot=true"
+            )
             tasks = "publish"
         }
     }
