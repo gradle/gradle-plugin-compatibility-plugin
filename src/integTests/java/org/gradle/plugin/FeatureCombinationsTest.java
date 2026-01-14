@@ -44,26 +44,19 @@ class FeatureCombinationsTest extends CompatibilityTestBase {
 
     @ParameterizedTest
     @CsvSource({
-            "true,      true,      DECLARED_SUPPORTED,   DECLARED_SUPPORTED",
-            "true,      false,     DECLARED_SUPPORTED,   DECLARED_UNSUPPORTED",
-            "false,     true,      DECLARED_UNSUPPORTED, DECLARED_SUPPORTED",
-            "false,     false,     DECLARED_UNSUPPORTED, DECLARED_UNSUPPORTED",
-            "true,      undefined, DECLARED_SUPPORTED,   UNDECLARED",
-            "false,     undefined, DECLARED_UNSUPPORTED, UNDECLARED",
-            "undefined, true,      UNDECLARED,           DECLARED_SUPPORTED",
-            "undefined, false,     UNDECLARED,           DECLARED_UNSUPPORTED",
-            "undefined, undefined, UNDECLARED,           UNDECLARED"
+        "true,      DECLARED_SUPPORTED",
+        "false,     DECLARED_UNSUPPORTED",
+        "undefined, UNDECLARED",
     })
     @DisplayName("All feature combinations including undefined")
     void testAllFeatureCombinations(
             String ccValue,
-            String ipValue,
-            String expectedCc,
-            String expectedIp) throws IOException {
+            String expectedCc
+    ) throws IOException {
 
         withSettingsFile();
 
-        String featuresBlock = buildFeaturesBlock(ccValue, ipValue);
+        String featuresBlock = buildFeaturesBlock(ccValue);
 
         withKotlinBuildScript("""
             import org.gradle.plugin.compatibility.compatibility
@@ -88,18 +81,14 @@ class FeatureCombinationsTest extends CompatibilityTestBase {
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(expectedCc)
-                .hasIsolatedProjects(expectedIp);
+            .hasImplementationClass("org.gradle.plugin.TestPlugin")
+            .hasConfigurationCache(expectedCc);
     }
 
-    private String buildFeaturesBlock(String cc, String ip) {
+    private String buildFeaturesBlock(String cc) {
         StringBuilder sb = new StringBuilder("features {\n");
         if (!"undefined".equals(cc)) {
             sb.append("                configurationCache.set(").append(cc).append(")\n");
-        }
-        if (!"undefined".equals(ip)) {
-            sb.append("                isolatedProjects.set(").append(ip).append(")\n");
         }
         sb.append("            }");
         return sb.toString();

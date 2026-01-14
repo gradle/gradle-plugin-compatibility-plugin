@@ -60,9 +60,6 @@ class TaskUpToDateTest extends CompatibilityTestBase {
                                 configurationCache.set(
                                     providers.systemProperty("enable-cc").map { it.toBoolean() }
                                 )
-                                isolatedProjects.set(
-                                    providers.systemProperty("enable-ip").map { it.toBoolean() }
-                                )
                             }
                         }
                     }
@@ -86,8 +83,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
                         .isIn(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE));
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNDECLARED);
+            .hasConfigurationCache(SUPPORTED);
 
         // Second run with same property value - task should be up to date
         var secondRun = runGradle("jar", "-Denable-cc=true");
@@ -100,8 +96,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
                         .isEqualTo(TaskOutcome.UP_TO_DATE));
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNDECLARED);
+            .hasConfigurationCache(SUPPORTED);
     }
 
     @Test
@@ -112,7 +107,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertThat(firstRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNDECLARED);
+            .hasConfigurationCache(UNDECLARED);
 
         // Second run - the property changed to true
         var secondRun = runGradle("jar", "-Denable-cc=true");
@@ -126,7 +121,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         // Descriptor should have the updated value
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(SUPPORTED);
+            .hasConfigurationCache(SUPPORTED);
 
         // Third run - the property changed to false
         var thirdRun = runGradle("jar", "-Denable-cc=false");
@@ -140,7 +135,7 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         // Descriptor should be updated
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNSUPPORTED);
+            .hasConfigurationCache(UNSUPPORTED);
 
         // Fourth run - the property changed back to undefined
         runGradle("jar");
@@ -154,33 +149,6 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         // Descriptor should be updated
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNDECLARED);
-    }
-
-    @Test
-    @DisplayName("Task stays up-to-date when multiple property values do not change")
-    void taskStaysUpToDateWithMultipleProperties() {
-        // First run with both properties set
-        var firstRun = runGradle("jar", "-Denable-cc=true", "-Denable-ip=true");
-
-        assertThat(firstRun.getOutput()).contains("BUILD SUCCESSFUL");
-        assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(SUPPORTED);
-
-        // Second run with same property values - task should be up to date
-        var secondRun = runGradle("jar", "-Denable-cc=true", "-Denable-ip=true");
-
-        assertThat(secondRun.getOutput()).contains("BUILD SUCCESSFUL");
-        assertThat(secondRun.task(":pluginDescriptors"))
-                .isNotNull()
-                .satisfies(task -> assertThat(task.getOutcome())
-                        .as("Task should be UP-TO-DATE when property values haven't changed")
-                        .isEqualTo(TaskOutcome.UP_TO_DATE));
-
-        // Descriptors should still have correct values
-        assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(SUPPORTED);
+            .hasConfigurationCache(UNDECLARED);
     }
 }

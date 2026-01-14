@@ -53,7 +53,6 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
                         compatibility {
                             features {
                                 configurationCache = true
-                                isolatedProjects = false
                             }
                         }
                     }
@@ -68,8 +67,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNSUPPORTED);
+                .hasConfigurationCache(SUPPORTED);
     }
 
     @Test
@@ -87,7 +85,6 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
                         compatibility {
                             features {
                                 configurationCache = true
-                                isolatedProjects = false
                             }
                         }
                     }
@@ -102,38 +99,6 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNSUPPORTED);
-    }
-
-    @Test
-    @DisplayName("Modern syntax with only isolated-projects set")
-    void modernSyntaxOnlyIsolatedProjects() throws IOException {
-        withSettingsFile();
-        withGroovyBuildScript("""
-            gradlePlugin {
-                plugins {
-                    create('testPlugin') {
-                        id = 'org.gradle.test.plugin'
-                        implementationClass = 'org.gradle.plugin.TestPlugin'
-                        compatibility {
-                            features {
-                                isolatedProjects = true
-                            }
-                        }
-                    }
-                }
-            }
-            """);
-        createTestPluginSource();
-
-        var result = runGradle("jar");
-
-        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
-
-        assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(UNDECLARED)
-                .hasIsolatedProjects(SUPPORTED);
+                .hasConfigurationCache(SUPPORTED);
     }
 }

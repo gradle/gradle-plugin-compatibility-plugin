@@ -263,10 +263,5 @@ public abstract class CompatibilityTestBase {
         public PluginDescriptorAssertion hasConfigurationCache(String supportLevel) {
             return hasFeature(CompatibilityDeclarationProtocol.FEATURE_CONFIGURATION_CACHE, supportLevel);
         }
-
-        @CanIgnoreReturnValue
-        public PluginDescriptorAssertion hasIsolatedProjects(String supportLevel) {
-            return hasFeature(CompatibilityDeclarationProtocol.FEATURE_ISOLATED_PROJECTS, supportLevel);
-        }
     }
 }

@@ -88,8 +88,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
 
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNDECLARED);
+                .hasConfigurationCache(SUPPORTED);
     }
 
     @Test
@@ -168,7 +167,7 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
                         implementationClass = "com.example.Plugin2"
                         compatibility {
                             features {
-                                isolatedProjects.set(true)
+                                configurationCache.set(false)
                             }
                         }
                     }
@@ -193,11 +192,9 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
                 .contains("Reusing configuration cache.");
 
         assertPluginDescriptor("com.example.plugin1")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNDECLARED);
+                .hasConfigurationCache(SUPPORTED);
 
         assertPluginDescriptor("com.example.plugin2")
-                .hasConfigurationCache(UNDECLARED)
-                .hasIsolatedProjects(SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
     }
 }

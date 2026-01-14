@@ -42,37 +42,6 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
     }
 
     @Test
-    @DisplayName("Legacy compatibility(it) syntax with both features set")
-    void legacySyntaxBothFeaturesSet() throws IOException {
-        withSettingsFile();
-        withGroovyBuildScript("""
-            gradlePlugin {
-                plugins {
-                    create('testPlugin') {
-                        id = 'org.gradle.test.plugin'
-                        implementationClass = 'org.gradle.plugin.TestPlugin'
-                        compatibility(it) {
-                            features {
-                                configurationCache = true
-                                isolatedProjects = false
-                            }
-                        }
-                    }
-                }
-            }
-            """);
-        createTestPluginSource();
-
-        var result = runGradle("jar");
-
-        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
-        assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNSUPPORTED);
-    }
-
-    @Test
     @DisplayName("Legacy syntax with only configuration-cache set")
     void legacySyntaxOnlyConfigurationCache() throws IOException {
         withSettingsFile();
@@ -98,8 +67,7 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNDECLARED);
+                .hasConfigurationCache(SUPPORTED);
     }
 
     @Test
@@ -122,7 +90,6 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
                         compatibility(it) {
                             features {
                                 configurationCache = false
-                                isolatedProjects = true
                             }
                         }
                     }
@@ -137,7 +104,6 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
         // named() block should override create() block
         assertPluginDescriptor("org.gradle.test.plugin")
                 .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(UNSUPPORTED)
-                .hasIsolatedProjects(SUPPORTED);
+                .hasConfigurationCache(UNSUPPORTED);
     }
 }
