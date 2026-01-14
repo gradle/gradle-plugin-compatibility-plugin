@@ -1,7 +1,20 @@
-# Gradle specific files
+# Dotfiles in general
+.*
+!.gitignore
+
+# Gradle intermediates
 .gradle/
 **/build/
 
+# GitHub Actions should be commited
+!.github
+
+# Teamcity Pipeline definitions, commited except their compilation outputs
+!.teamcity
+.teamcity/target
+
+# IDEA configuration files
 .idea/*
+# Keep codestyle and copyright profile commited
 !.idea/codeStyles/
 !.idea/copyright/

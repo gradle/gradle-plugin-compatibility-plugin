@@ -16,111 +16,162 @@
 
 import net.ltgt.gradle.errorprone.errorprone
 import net.ltgt.gradle.nullaway.nullaway
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
     `java-gradle-plugin`
+    `jvm-test-suite`
     `kotlin-dsl`
     `maven-publish`
-    `jvm-test-suite`
     checkstyle
-    id("net.ltgt.errorprone") version "4.3.0"
-    id("net.ltgt.nullaway") version "2.3.0"
+    signing
+
+    alias(libs.plugins.errorprone)
+    alias(libs.plugins.nullaway)
+    alias(libs.plugins.pluginPublish)
 }
 
 group = "org.gradle.plugin"
-version = "0.1.0"
+
+val shouldPublishAsSnapshot = providers.gradleProperty("publishSnapshot").map { it.toBoolean() }.orElse(true)
+
+version = libs.versions.project.zip(shouldPublishAsSnapshot) {
+    versionString, isSnapshot -> if (isSnapshot) "$versionString-SNAPSHOT" else versionString
+}.get()
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
-    // We are stuck on 2.42.0, because
-    //  - Grade 7.4.2 (our oldest cross-version test target) can only use maximum JDK 17
-    //  - ErrorProne 2.42.0+ required JDK 21
-    errorprone("com.google.errorprone:error_prone_core:2.42.0")
-    errorprone("com.uber.nullaway:nullaway:0.12.14")
-
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.20.0") {
-        because("Needed for parsing the Gradle releases metadata JSON")
-    }
-
-    testImplementation(platform("org.junit:junit-bom:6.0.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-    testImplementation("org.assertj:assertj-core:3.25.3")
+    errorprone(libs.build.errorprone)
+    errorprone(libs.build.nullaway)
 }
 
 kotlin {
-    // Also sets the Java toolchain
-    jvmToolchain(17)
+    // Set up the JDK used to compile Java and Kotlin code.
+    jvmToolchain(libs.versions.jvm.compileJdk)
 }
 
 gradlePlugin {
+    website = "https://github.com/gradle/compatibility-plugin"
+    vcsUrl = "https://github.com/gradle/compatibility-plugin.git"
+
     plugins {
-        register("compatibility-plugin") {
+        register("compatibilityPlugin") {
             id = "org.gradle.plugin-compatibility"
             implementationClass = "org.gradle.plugin.compatibility.internal.CompatibilityPlugin"
+            displayName = "Gradle Plugin Compatibility Plugin"
+            description = "Adds compatibility metadata to Gradle plugins for display on the Plugin Portal"
+            tags = listOf("gradle", "plugin", "compatibility")
+        }
+    }
+    // TODO(mlopatkin) Apply the plugin and define its compatibility.
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "staging"
+
+            val stagingRepoUrl = providers.environmentVariable("GRADLE_INTERNAL_REPO_URL")
+                .map { URI("$it/libs-snapshots-local") }
+                .orElse(uri(layout.buildDirectory.dir("staging-repo")))
+
+            url = stagingRepoUrl.get()
+
+            var usernameProvider = providers.environmentVariable("INTERNAL_REPO_USERNAME")
+            var passwordProvider = providers.environmentVariable("INTERNAL_REPO_PASSWORD")
+
+            if (usernameProvider.isPresent && passwordProvider.isPresent) {
+                credentials {
+                    username = usernameProvider.get()
+                    password = passwordProvider.get()
+                }
+            }
         }
     }
 }
 
-val java8Launcher = javaToolchains.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(8))
+signing {
+    // Use in-memory ASCII-armored keys from environment variables
+    val signingKey = providers.environmentVariable("PGP_SIGNING_KEY")
+    val signingPassword = providers.environmentVariable("PGP_SIGNING_KEY_PASSPHRASE")
+
+    if (signingKey.isPresent && signingPassword.isPresent) {
+        useInMemoryPgpKeys(signingKey.get(), signingPassword.get())
+        sign(publishing.publications)
+    } else {
+        tasks.withType<Sign>().configureEach { enabled = false }
+    }
 }
 
 testing {
     suites {
-        val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
-        }
-
-        val integTests by registering(JvmTestSuite::class) {
+        withType<JvmTestSuite>().configureEach {
             useJUnitJupiter()
 
             dependencies {
+                implementation(libs.test.assertj.core)
+                implementation(platform(libs.test.junit.bom))
+                implementation(libs.test.junit.jupiter.api)
+                implementation(libs.test.junit.jupiter.params)
+
+                runtimeOnly(libs.test.junit.jupiter.engine)
+                runtimeOnly(libs.test.junit.platform.launcher)
+            }
+        }
+
+        named<JvmTestSuite>("test") {
+            dependencies {
+                implementation(libs.test.jackson.databind)  {
+                    because("Needed for parsing the Gradle releases metadata JSON")
+                }
+            }
+        }
+
+        val integTests by registering(JvmTestSuite::class) {
+            dependencies {
                 implementation(project())
                 implementation(gradleTestKit())
-                implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
-                implementation(platform("org.junit:junit-bom:6.0.0"))
-                implementation("org.junit.jupiter:junit-jupiter-api")
-                implementation("org.junit.jupiter:junit-jupiter-params")
-                runtimeOnly("org.junit.jupiter:junit-jupiter-engine")
-                runtimeOnly("org.junit.platform:junit-platform-launcher")
-                implementation("org.assertj:assertj-core:3.25.3")
             }
 
             targets {
                 all {
                     testTask.configure {
-                        val pluginMetadata = tasks.named("pluginUnderTestMetadata")
+                        val pluginMetadata = tasks.pluginUnderTestMetadata
                         dependsOn(pluginMetadata)
                         classpath += files(pluginMetadata)
                     }
+                }
+
+                val java8Launcher = javaToolchains.launcherFor {
+                    languageVersion(libs.versions.jvm.productionTarget)
                 }
 
                 // Java 8 target - runs tests with Java 8, skips Gradle 9+
                 register("java8IntegTest") {
                     testTask.configure {
                         systemProperty("java8Home", java8Launcher.get().metadata.installationPath.asFile.absolutePath)
-                        val pluginMetadata = tasks.named("pluginUnderTestMetadata")
-                        dependsOn(pluginMetadata)
-                        classpath += files(pluginMetadata)
                     }
                 }
             }
+        }
+
+        tasks.check {
+            dependsOn(integTests)
         }
     }
 }
 
 tasks {
     compileJava {
-        options.release = 8
+        // Compile production code to Java 8 bytecode with Java 8 APIs
+        options.release(libs.versions.jvm.productionTarget)
     }
 
     withType<JavaCompile>().configureEach {
@@ -135,18 +186,39 @@ tasks {
     }
 
     withType<KotlinCompile>().configureEach {
+        // I don't understand why, but setting this config in `kotlin` block doesn't work, compilation on Gradle 7.4 fails
+        // with an error in Protobuf metadata parsing.
         compilerOptions {
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+            // Compile production code to Kotlin 1.8 to ensure compatibility with older Gradle versions, like 7.4
+            languageVersion = KotlinVersion.KOTLIN_1_8
+            apiVersion = KotlinVersion.KOTLIN_1_8
+            // Compile production code to Java 8 bytecode
+            jvmTarget = JvmTarget.JVM_1_8
         }
     }
 
-    check {
-        dependsOn(testing.suites.named("integTests"))
+    publishPlugins {
+        val isSnapshot = shouldPublishAsSnapshot
+
+        onlyIf("Cannot publish snapshots to the plugin portal") {
+            !isSnapshot.get()
+        }
     }
 
     register("checkstyle") {
         dependsOn("checkstyleMain", "checkstyleTest", "checkstyleIntegTests")
     }
+}
+
+
+fun KotlinJvmProjectExtension.jvmToolchain(version: Provider<out String>) {
+    this.jvmToolchain(version.get().toInt())
+}
+
+fun JavaToolchainSpec.languageVersion(version: Provider<out String>) {
+    this.languageVersion = version.map(JavaLanguageVersion::of)
+}
+
+fun CompileOptions.release(version: Provider<out String>) {
+    this.release.set(version.get().toInt())
 }
