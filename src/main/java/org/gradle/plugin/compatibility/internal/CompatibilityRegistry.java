@@ -54,7 +54,13 @@ public class CompatibilityRegistry {
         new ConcurrentWeakIdentityHashMap<>();
 
     public static void store(PluginDeclaration declaration, Action<? super CompatibilityExtension> action) {
-        FEATURE_CONFIGURATORS.computeIfAbsent(declaration, d -> new ArrayList<>()).add(action::execute);
+        // It is unlikely that we're going to configure the same plugin declaration concurrently,
+        // but it doesn't hurt to be prepared for that.
+        List<Action<CompatibilityExtension>> actions = FEATURE_CONFIGURATORS.computeIfAbsent(
+            declaration,
+            d -> Collections.synchronizedList(new ArrayList<>())
+        );
+        actions.add(action::execute);
     }
 
     public static List<Action<CompatibilityExtension>> getForDeclaration(PluginDeclaration declaration) {
