@@ -64,6 +64,12 @@ abstract class AbstractBuildType(block: BuildType.() -> Unit) : BuildType({
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
 
+    features {
+        feature {
+            type = "aws-secrets-build-feature"
+        }
+    }
+
     block()
 })
 
@@ -93,9 +99,6 @@ object Verify : AbstractBuildType({
     }
 
     features {
-        feature {
-            type = "aws-secrets-build-feature"
-        }
         commitStatusPublisher {
             vcsRootExtId = vcsRoot.absoluteId
             publisher = github {
