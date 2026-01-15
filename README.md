@@ -1,34 +1,21 @@
 # Gradle Plugin Compatibility Plugin
 
-This plugin extends a Gradle plugin block, and adds extra metainformation that the plugin portal can use.
+This plugin extends a Gradle plugin block, and adds extra metainformation that the [Gradle Plugin Portal](https://plugins.gradle.org/) can use.
 If you want a badge for your plugin in the Plugin Portal, this is the plugin that you need.
 
 ## How to use
 
-### Getting started
+This plugin works with the [Gradle Plugin development plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html).
+It adds an extension to each `PluginDeclaration` that you can use to define compatibility metadata.
 
-First, apply the plugin. It is designed to work with [Gradle Plugin development plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html).
-
-In your `build.gradle`/`build.gradle.kts`:
-
-```kotlin
-plugins {
-    id("java-gradle-plugin") // You need the Gradle Plugin development plugin to define plugins
-    id("org.gradle.plugin-compatibility") version "1.0.0"
-}
-```
-
-### Declare the capabilities
-
-The plugin adds an extension to each `plugins.plugin` block, which you can use to define the extra metadata.
-
-Here is an example how it looks like in Kotlin:
+### Kotlin DSL
 
 ```kotlin
-import org.gradle.plugin.compatibility // You have to explicitly import the extension function. 
+// IMPORTANT: You must explicitly import the extension function in Kotlin DSL
+import org.gradle.plugin.compatibility
 
 plugins {
-    id("java-gradle-plugin") 
+    id("java-gradle-plugin")
     id("org.gradle.plugin-compatibility") version "1.0.0"
 }
 
@@ -40,7 +27,7 @@ gradlePlugin {
             compatibility { // Extension function added by the plugin
                 features {
                     // Declare that the plugin supports the configuration cache
-                    configurationCache = true
+                    configurationCache.set(true) // configurationCache = true also works in Gradle 8.2+
                 }
             }
         }
@@ -48,10 +35,14 @@ gradlePlugin {
 }
 ```
 
-It works almost the same way with Groovy:
+### Groovy DSL
+
+The import is not needed in Groovy DSL, but the syntax differs between Gradle versions.
+
+**For Gradle 8.14 and newer:**
 ```groovy
 plugins {
-    id("java-gradle-plugin") // You need the Gradle Plugin plugin to define plugins 
+    id("java-gradle-plugin")
     id("org.gradle.plugin-compatibility") version "1.0.0"
 }
 
@@ -60,15 +51,7 @@ gradlePlugin {
         create("myPlugin") {
             id = "com.example.myplugin"
             implementationClass = "com.example.MyPlugin"
-            compatibility { // Extension function added by the plugin. Available since Gradle 8.14.
-                features {
-                    // Declare that the plugin supports the configuration cache
-                    configurationCache = true
-                }
-            }
-            
-            // For Gradle versions older than 8.14, you need to use the "legacy" application syntax.
-            compatibility(it) { // Pass the PluginDeclaration instance explicitly.
+            compatibility {
                 features {
                     configurationCache = true
                 }
@@ -78,17 +61,43 @@ gradlePlugin {
 }
 ```
 
-You can also declare that your plugin *doesn't support* a feature (hopefully, yet):
-```
-// ...
-    features {
-        configurationCache = false
+**For Gradle 8.13 and older (legacy syntax):**
+```groovy
+plugins {
+    id("java-gradle-plugin")
+    id("org.gradle.plugin-compatibility") version "1.0.0"
+}
+
+gradlePlugin {
+    plugins {
+        create("myPlugin") {
+            id = "com.example.myplugin"
+            implementationClass = "com.example.MyPlugin"
+            compatibility(it) { // Note: pass 'it' explicitly
+                features {
+                    configurationCache = true
+                }
+            }
+        }
     }
-// ...
+}
 ```
 
-Gradle may emit warnings for builds that include such a plugin and enable the unsupported feature.
-This can help users, who try to adopt a feature in their build, to figure out that they may need to update your plugin to a newer version.
+### Declaring unsupported features
+
+You can also declare that your plugin *doesn't support* a feature.
+This is useful when your plugin is known to be incompatible with a Gradle feature:
+
+```kotlin
+compatibility {
+    features {
+        configurationCache.set(false)
+    }
+}
+```
+
+When a build enables the unsupported feature, Gradle may emit warnings pointing at the unsupported plugin.
+This helps users understand why a feature isn't working and signals that they may need to update your plugin to a newer version that adds support.
 
 ### Features available for declaring
 
@@ -96,18 +105,19 @@ In the `compatibility` block, you can define the following `features`:
 
 | Feature              | Description                                                                | Since version |
 |----------------------|----------------------------------------------------------------------------|---------------|
-| `configurationCache` | Indicates that the plugin is compatible with Gradle's configuration cache. | 1.0.0         |
+| `configurationCache` | Indicates that the plugin is compatible with Gradle's [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html). | 1.0.0         |
 
 See [`org.gradle.plugin.compatibility.CompatibleFeatures`](src/main/java/org/gradle/plugin/compatibility/CompatibleFeatures.java) for the full list.
 
-## Protocol
+### Important notes
 
-The plugin adds the metainformation into each plugin JAR's `META-INF/gradle-plugins/<plugin-id>.properties` file.
-Metadata definitions can be found in [`org.gradle.plugin.compatibility.CompatibilityDeclarationProtocol`](src/main/java/org/gradle/plugin/compatibility/CompatibilityDeclarationProtocol.java).
+**Configuration-time values:** Feature compatibility values must be computable at configuration time.
+They cannot be derived from task outputs or other values that are only available during task execution.
 
 ## Gradle version support
 
-This plugin supports Gradle versions starting with Gradle 7.4.2. In Groovy DSL, for versions of Gradle older than 8.14, the "legacy" configuration syntax (`compatibility(it)`) must be used.
+This plugin supports Gradle versions starting with Gradle 7.4.2.
+In Groovy DSL, for versions of Gradle older than 8.14, the "legacy" configuration syntax (`compatibility(it)`) must be used.
 There are no additional restrictions to the JVM version, anything capable of running the supported Gradle version will do.
 
 This plugin fully supports [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html) and [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html).
