@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests both legacy and modern syntax, in same and different clauses.
  */
 @Execution(ExecutionMode.CONCURRENT)
-class MultipleCompatibilityBlocksTest{
+class MultipleCompatibilityBlocksTest {
 
     @Nested
     @ParameterizedClass
@@ -50,72 +50,72 @@ class MultipleCompatibilityBlocksTest{
         void legacyMultipleBlocksSameCreate() throws IOException {
 
             withSettingsFile();
-        withGroovyBuildScript("""
-            gradlePlugin {
-                plugins {
-                    create('testPlugin') {
-                        id = 'org.gradle.test.plugin'
-                        implementationClass = 'org.gradle.plugin.TestPlugin'
-                        compatibility(it) {
-                            features {
-                                configurationCache = true
+            withGroovyBuildScript("""
+                gradlePlugin {
+                    plugins {
+                        create('testPlugin') {
+                            id = 'org.gradle.test.plugin'
+                            implementationClass = 'org.gradle.plugin.TestPlugin'
+                            compatibility(it) {
+                                features {
+                                    configurationCache = true
+                                }
                             }
-                        }
-                        compatibility(it) {
-                            features {
-                                configurationCache = false
+                            compatibility(it) {
+                                features {
+                                    configurationCache = false
+                                }
                             }
                         }
                     }
                 }
-            }
-            """);
-        createTestPluginSource();
+                """);
+            createTestPluginSource();
 
             var result = runGradle("jar");
 
-        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
+            assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
-        // Last block wins
-        assertPluginDescriptor("org.gradle.test.plugin")
+            // Last block wins
+            assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(UNSUPPORTED);
-    }
+        }
 
         @Test
         @DisplayName("Legacy: multiple blocks in create() and named() - named wins")
         void legacyMultipleBlocksCreateAndNamed() throws IOException {
 
             withSettingsFile();
-        withGroovyBuildScript("""
-            gradlePlugin {
-                plugins {
-                    create('testPlugin') {
-                        id = 'org.gradle.test.plugin'
-                        implementationClass = 'org.gradle.plugin.TestPlugin'
-                        compatibility(it) {
-                            features {
-                                configurationCache = true
+            withGroovyBuildScript("""
+                gradlePlugin {
+                    plugins {
+                        create('testPlugin') {
+                            id = 'org.gradle.test.plugin'
+                            implementationClass = 'org.gradle.plugin.TestPlugin'
+                            compatibility(it) {
+                                features {
+                                    configurationCache = true
+                                }
                             }
                         }
-                    }
-                    named('testPlugin') {
-                        compatibility(it) {
-                            features {
-                                configurationCache = false
+                        named('testPlugin') {
+                            compatibility(it) {
+                                features {
+                                    configurationCache = false
+                                }
                             }
                         }
                     }
                 }
-            }
-            """);
-        createTestPluginSource();
+                """);
+            createTestPluginSource();
 
             var result = runGradle("jar");
 
-        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
+            assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
-        // named() block wins for configurationCache
-        assertPluginDescriptor("org.gradle.test.plugin")
+            // named() block wins for configurationCache
+            assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(UNSUPPORTED);
         }
     }
@@ -135,72 +135,72 @@ class MultipleCompatibilityBlocksTest{
         void modernMultipleBlocksSameCreate() throws IOException {
 
             withSettingsFile();
-        withGroovyBuildScript("""
-            gradlePlugin {
-                plugins {
-                    create('testPlugin') {
-                        id = 'org.gradle.test.plugin'
-                        implementationClass = 'org.gradle.plugin.TestPlugin'
-                        compatibility {
-                            features {
-                                configurationCache = true
+            withGroovyBuildScript("""
+                gradlePlugin {
+                    plugins {
+                        create('testPlugin') {
+                            id = 'org.gradle.test.plugin'
+                            implementationClass = 'org.gradle.plugin.TestPlugin'
+                            compatibility {
+                                features {
+                                    configurationCache = true
+                                }
                             }
-                        }
-                        compatibility {
-                            features {
-                                configurationCache = false
+                            compatibility {
+                                features {
+                                    configurationCache = false
+                                }
                             }
                         }
                     }
                 }
-            }
-            """);
-        createTestPluginSource();
+                """);
+            createTestPluginSource();
 
             var result = runGradle("jar");
 
-        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
+            assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
-        // Last block wins
-        assertPluginDescriptor("org.gradle.test.plugin")
+            // Last block wins
+            assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(UNSUPPORTED);
-    }
+        }
 
         @Test
         @DisplayName("Modern: multiple blocks in create() and named() - named wins")
         void modernMultipleBlocksCreateAndNamed() throws IOException {
 
             withSettingsFile();
-        withGroovyBuildScript("""
-            gradlePlugin {
-                plugins {
-                    create('testPlugin') {
-                        id = 'org.gradle.test.plugin'
-                        implementationClass = 'org.gradle.plugin.TestPlugin'
-                        compatibility {
-                            features {
-                                configurationCache = true
+            withGroovyBuildScript("""
+                gradlePlugin {
+                    plugins {
+                        create('testPlugin') {
+                            id = 'org.gradle.test.plugin'
+                            implementationClass = 'org.gradle.plugin.TestPlugin'
+                            compatibility {
+                                features {
+                                    configurationCache = true
+                                }
                             }
                         }
-                    }
-                    named('testPlugin') {
-                        compatibility {
-                            features {
-                                configurationCache = false
+                        named('testPlugin') {
+                            compatibility {
+                                features {
+                                    configurationCache = false
+                                }
                             }
                         }
                     }
                 }
-            }
-            """);
-        createTestPluginSource();
+                """);
+            createTestPluginSource();
 
             var result = runGradle("jar");
 
-        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
+            assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
-        // named() block wins for configurationCache, isolatedProjects from create() is preserved
-        assertPluginDescriptor("org.gradle.test.plugin")
+            // named() block wins for configurationCache, isolatedProjects from create() is preserved
+            assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(UNSUPPORTED);
         }
 
@@ -210,35 +210,35 @@ class MultipleCompatibilityBlocksTest{
 
             withSettingsFile();
             withGroovyBuildScript("""
-                    gradlePlugin {
-                        plugins {
-                            create('testPlugin') {
-                                id = 'org.gradle.test.plugin'
-                                implementationClass = 'org.gradle.plugin.TestPlugin'
-                                compatibility(it) {
-                                    features {
-                                        configurationCache = true
-                                    }
+                gradlePlugin {
+                    plugins {
+                        create('testPlugin') {
+                            id = 'org.gradle.test.plugin'
+                            implementationClass = 'org.gradle.plugin.TestPlugin'
+                            compatibility(it) {
+                                features {
+                                    configurationCache = true
                                 }
                             }
-                            named('testPlugin') {
-                                compatibility {
-                                    features {
-                                        configurationCache = false
-                                    }
+                        }
+                        named('testPlugin') {
+                            compatibility {
+                                features {
+                                    configurationCache = false
                                 }
                             }
                         }
                     }
-                    """);
-        createTestPluginSource();
+                }
+                """);
+            createTestPluginSource();
 
             var result = runGradle("jar");
 
-        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
+            assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
-        // named() block wins regardless of syntax
-        assertPluginDescriptor("org.gradle.test.plugin")
+            // named() block wins regardless of syntax
+            assertPluginDescriptor("org.gradle.test.plugin")
                 .hasConfigurationCache(UNSUPPORTED);
         }
     }

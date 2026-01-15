@@ -65,12 +65,12 @@ public abstract class CompatibilityTestBase {
         // TODO(https://github.com/gradle/gradle-plugin-compatibility-plugin/issues/3) Figure out the strategy for
         //  testing latest Gradle releases here (automatically?)
         Stream<GradleVersion> versions = Stream.of(
-                "7.4.2", // Oldest supported
-                "7.6.6", // Latest 7.x
-                "8.0.2", // First 8.x release
-                "8.14.3", // Last 8.x release
-                "9.0.0", // First 9.x release
-                "9.2.1" // Last 9.x release
+            "7.4.2", // Oldest supported
+            "7.6.6", // Latest 7.x
+            "8.0.2", // First 8.x release
+            "8.14.3", // Last 8.x release
+            "9.0.0", // First 9.x release
+            "9.2.1" // Last 9.x release
         ).map(GradleVersion::version);
 
         // Skip Gradle 9+ when running with Java 8
@@ -89,15 +89,15 @@ public abstract class CompatibilityTestBase {
     @SuppressWarnings("unused") // Used in @MethodSource
     protected static Stream<String> legacySyntaxOnlyGradleVersions() {
         return testedGradleVersions()
-                .filter(v -> v.compareTo(EXTENSION_AWARE_MIN_VERSION) < 0)
-                .map(GradleVersion::getVersion);
+            .filter(v -> v.compareTo(EXTENSION_AWARE_MIN_VERSION) < 0)
+            .map(GradleVersion::getVersion);
     }
 
     @SuppressWarnings("unused") // Used in @MethodSource
     protected static Stream<String> modernSyntaxGradleVersions() {
         return testedGradleVersions()
-                .filter(v -> v.compareTo(EXTENSION_AWARE_MIN_VERSION) >= 0)
-                .map(GradleVersion::getVersion);
+            .filter(v -> v.compareTo(EXTENSION_AWARE_MIN_VERSION) >= 0)
+            .map(GradleVersion::getVersion);
     }
 
     @BeforeEach
@@ -195,20 +195,20 @@ public abstract class CompatibilityTestBase {
 
     private GradleRunner createRunner(String... args) {
         return GradleRunner.create()
-                .withGradleVersion(gradleVersion)
-                .withProjectDir(testProjectDir.toFile())
-                .forwardOutput()
-                .withArguments(buildArguments(new ArrayList<>(), args))
-                .withPluginClasspath();
+            .withGradleVersion(gradleVersion)
+            .withProjectDir(testProjectDir.toFile())
+            .forwardOutput()
+            .withArguments(buildArguments(new ArrayList<>(), args))
+            .withPluginClasspath();
     }
 
     protected PluginDescriptorAssertion assertPluginDescriptor(String pluginId) {
         Path propertiesFile = testProjectDir.resolve(
-                "build/resources/main/META-INF/gradle-plugins/" + pluginId + ".properties"
+            "build/resources/main/META-INF/gradle-plugins/" + pluginId + ".properties"
         );
         assertThat(propertiesFile)
-                .as("Plugin descriptor file should exist")
-                .exists();
+            .as("Plugin descriptor file should exist")
+            .exists();
         try {
             String content = Files.readString(propertiesFile);
             return new PluginDescriptorAssertion(content);
@@ -219,11 +219,11 @@ public abstract class CompatibilityTestBase {
 
     protected PluginDescriptorAssertion assertPluginDescriptor(String subproject, String pluginId) {
         Path propertiesFile = testProjectDir.resolve(
-                subproject + "/build/resources/main/META-INF/gradle-plugins/" + pluginId + ".properties"
+            subproject + "/build/resources/main/META-INF/gradle-plugins/" + pluginId + ".properties"
         );
         assertThat(propertiesFile)
-                .as("Plugin descriptor file should exist")
-                .exists();
+            .as("Plugin descriptor file should exist")
+            .exists();
         try {
             String content = Files.readString(propertiesFile);
             return new PluginDescriptorAssertion(content);
@@ -252,7 +252,7 @@ public abstract class CompatibilityTestBase {
         public PluginDescriptorAssertion hasFeature(String featureName, String supportLevel) {
             isNotNull();
             String expectedLine =
-                    CompatibilityDeclarationProtocol.SUPPORT_FLAGS_PREFIX + featureName + "=" + supportLevel + "\n";
+                CompatibilityDeclarationProtocol.SUPPORT_FLAGS_PREFIX + featureName + "=" + supportLevel + "\n";
             if (!actual.contains(expectedLine)) {
                 failWithMessage("Expected plugin descriptor to contain feature <%s>=<%s> but did not", featureName, supportLevel);
             }

@@ -76,8 +76,8 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
 
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(expectedStatus);
+            .hasImplementationClass("org.gradle.plugin.TestPlugin")
+            .hasConfigurationCache(expectedStatus);
     }
 
     @Test
@@ -113,7 +113,7 @@ class LegacyGroovySyntaxCompatibilityTest extends CompatibilityTestBase {
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
         // named() block should override create() block
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(UNSUPPORTED);
+            .hasImplementationClass("org.gradle.plugin.TestPlugin")
+            .hasConfigurationCache(UNSUPPORTED);
     }
 }

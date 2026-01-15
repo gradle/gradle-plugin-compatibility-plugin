@@ -17,8 +17,8 @@
 package org.gradle.plugin.compatibility
 
 import org.gradle.api.Action
-import org.gradle.plugin.devel.PluginDeclaration
 import org.gradle.plugin.compatibility.internal.CompatibilityStrategy
+import org.gradle.plugin.devel.PluginDeclaration
 
 /**
  * Applies compatibility configuration defined in `action` to the `PluginDeclaration`.

@@ -78,9 +78,9 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertThat(firstRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertThat(firstRun.task(":pluginDescriptors"))
-                .isNotNull()
-                .satisfies(task -> assertThat(task.getOutcome())
-                        .isIn(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE));
+            .isNotNull()
+            .satisfies(task -> assertThat(task.getOutcome())
+                .isIn(TaskOutcome.SUCCESS, TaskOutcome.UP_TO_DATE));
 
         assertPluginDescriptor("org.gradle.test.plugin")
             .hasConfigurationCache(SUPPORTED);
@@ -90,10 +90,10 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertThat(secondRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertThat(secondRun.task(":pluginDescriptors"))
-                .isNotNull()
-                .satisfies(task -> assertThat(task.getOutcome())
-                        .as("Task should be UP-TO-DATE when property value hasn't changed")
-                        .isEqualTo(TaskOutcome.UP_TO_DATE));
+            .isNotNull()
+            .satisfies(task -> assertThat(task.getOutcome())
+                .as("Task should be UP-TO-DATE when property value hasn't changed")
+                .isEqualTo(TaskOutcome.UP_TO_DATE));
 
         assertPluginDescriptor("org.gradle.test.plugin")
             .hasConfigurationCache(SUPPORTED);
@@ -114,10 +114,10 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertThat(secondRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertThat(secondRun.task(":pluginDescriptors"))
-                .isNotNull()
-                .satisfies(task -> assertThat(task.getOutcome())
-                        .as("Task should be re-executed when property value changes")
-                        .isEqualTo(TaskOutcome.SUCCESS));
+            .isNotNull()
+            .satisfies(task -> assertThat(task.getOutcome())
+                .as("Task should be re-executed when property value changes")
+                .isEqualTo(TaskOutcome.SUCCESS));
 
         // Descriptor should have the updated value
         assertPluginDescriptor("org.gradle.test.plugin")
@@ -128,10 +128,10 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertThat(thirdRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertThat(thirdRun.task(":pluginDescriptors"))
-                .isNotNull()
-                .satisfies(task -> assertThat(task.getOutcome())
-                        .as("Task should be re-executed when property value changes back")
-                        .isEqualTo(TaskOutcome.SUCCESS));
+            .isNotNull()
+            .satisfies(task -> assertThat(task.getOutcome())
+                .as("Task should be re-executed when property value changes back")
+                .isEqualTo(TaskOutcome.SUCCESS));
 
         // Descriptor should be updated
         assertPluginDescriptor("org.gradle.test.plugin")
@@ -142,10 +142,10 @@ class TaskUpToDateTest extends CompatibilityTestBase {
 
         assertThat(thirdRun.getOutput()).contains("BUILD SUCCESSFUL");
         assertThat(thirdRun.task(":pluginDescriptors"))
-                .isNotNull()
-                .satisfies(task -> assertThat(task.getOutcome())
-                        .as("Task should be re-executed when property value changes back")
-                        .isEqualTo(TaskOutcome.SUCCESS));
+            .isNotNull()
+            .satisfies(task -> assertThat(task.getOutcome())
+                .as("Task should be re-executed when property value changes back")
+                .isEqualTo(TaskOutcome.SUCCESS));
 
         // Descriptor should be updated
         assertPluginDescriptor("org.gradle.test.plugin")

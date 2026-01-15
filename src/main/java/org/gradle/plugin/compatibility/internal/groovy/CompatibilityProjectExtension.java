@@ -18,8 +18,8 @@ package org.gradle.plugin.compatibility.internal.groovy;
 
 import groovy.lang.Closure;
 import org.gradle.api.Project;
-import org.gradle.plugin.devel.PluginDeclaration;
 import org.gradle.plugin.compatibility.internal.CompatibilityStrategy;
+import org.gradle.plugin.devel.PluginDeclaration;
 import org.jspecify.annotations.Nullable;
 
 import javax.inject.Inject;
@@ -49,7 +49,7 @@ public abstract class CompatibilityProjectExtension extends Closure<@Nullable Vo
     @SuppressWarnings("unused") // Groovy magic
     public @Nullable Void doCall(Closure<?> ignored) {
         throw new UnsupportedOperationException("compatibility { ... } syntax is only supported since Gradle 8.14+. " +
-                "Pass PluginDeclaration explicitly, like plugins { create('foo') { compatibility(it) { ... } }");
+            "Pass PluginDeclaration explicitly, like plugins { create('foo') { compatibility(it) { ... } }");
     }
 
     /**
@@ -57,7 +57,7 @@ public abstract class CompatibilityProjectExtension extends Closure<@Nullable Vo
      * <p>
      * <b>This method is part of the public API.</b>
      *
-     * @param declaration   the declaration to configure
+     * @param declaration the declaration to configure
      * @param configuration the configuration closure
      * @return {@code null}
      */
@@ -78,8 +78,8 @@ public abstract class CompatibilityProjectExtension extends Closure<@Nullable Vo
         // Expose the extension through extra properties, so Groovy lookup can find it, but there is no generated
         // accessor for the Kotlin DSL. Kotlin DSL relies on the explicit import instead.
         project.getExtensions().getExtraProperties().set(
-                "compatibility",
-                project.getObjects().newInstance(CompatibilityProjectExtension.class, project)
+            "compatibility",
+            project.getObjects().newInstance(CompatibilityProjectExtension.class, project)
         );
     }
 }

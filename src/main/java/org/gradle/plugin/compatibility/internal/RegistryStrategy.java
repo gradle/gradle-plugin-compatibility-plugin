@@ -39,8 +39,8 @@ class RegistryStrategy implements CompatibilityStrategy {
         CompatibilityExtension extension = project.getObjects().newInstance(CompatibilityExtension.class);
 
         CompatibilityRegistry
-                .getForDeclaration(declaration)
-                .forEach(action -> action.execute(extension));
+            .getForDeclaration(declaration)
+            .forEach(action -> action.execute(extension));
 
         return extension.getFeatures();
     }

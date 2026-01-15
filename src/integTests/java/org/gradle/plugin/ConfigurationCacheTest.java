@@ -83,12 +83,12 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         var secondRun = runGradle("jar");
 
         assertThat(secondRun.getOutput())
-                .contains("BUILD SUCCESSFUL")
-                .contains("Reusing configuration cache.");
+            .contains("BUILD SUCCESSFUL")
+            .contains("Reusing configuration cache.");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED);
+            .hasImplementationClass("org.gradle.plugin.TestPlugin")
+            .hasConfigurationCache(SUPPORTED);
     }
 
     @Test
@@ -122,27 +122,27 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         runGradle("jar");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNDECLARED);
+            .hasConfigurationCache(UNDECLARED);
 
         // Second run - the cache should not be invalidated
         var secondRun = runGradle("jar", "-Denable-cc=true");
 
         assertThat(secondRun.getOutput())
-                .contains("BUILD SUCCESSFUL")
-                .contains("Reusing configuration cache.");  // Cache was not invalidated
+            .contains("BUILD SUCCESSFUL")
+            .contains("Reusing configuration cache.");  // Cache was not invalidated
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(SUPPORTED);
+            .hasConfigurationCache(SUPPORTED);
 
         // Second run - the cache should not be invalidated
         var thirdRun = runGradle("jar", "-Denable-cc=false");
 
         assertThat(thirdRun.getOutput())
-                .contains("BUILD SUCCESSFUL")
-                .contains("Reusing configuration cache.");  // Cache was not invalidated
+            .contains("BUILD SUCCESSFUL")
+            .contains("Reusing configuration cache.");  // Cache was not invalidated
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasConfigurationCache(UNSUPPORTED);
+            .hasConfigurationCache(UNSUPPORTED);
     }
 
     @Test
@@ -188,13 +188,13 @@ class ConfigurationCacheTest extends CompatibilityTestBase {
         var secondRun = runGradle("jar");
 
         assertThat(secondRun.getOutput())
-                .contains("BUILD SUCCESSFUL")
-                .contains("Reusing configuration cache.");
+            .contains("BUILD SUCCESSFUL")
+            .contains("Reusing configuration cache.");
 
         assertPluginDescriptor("com.example.plugin1")
-                .hasConfigurationCache(SUPPORTED);
+            .hasConfigurationCache(SUPPORTED);
 
         assertPluginDescriptor("com.example.plugin2")
-                .hasConfigurationCache(UNSUPPORTED);
+            .hasConfigurationCache(UNSUPPORTED);
     }
 }

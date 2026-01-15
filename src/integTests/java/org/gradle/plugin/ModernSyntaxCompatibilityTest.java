@@ -66,8 +66,8 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED);
+            .hasImplementationClass("org.gradle.plugin.TestPlugin")
+            .hasConfigurationCache(SUPPORTED);
     }
 
     @Test
@@ -98,7 +98,7 @@ class ModernSyntaxCompatibilityTest extends CompatibilityTestBase {
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
         assertPluginDescriptor("org.gradle.test.plugin")
-                .hasImplementationClass("org.gradle.plugin.TestPlugin")
-                .hasConfigurationCache(SUPPORTED);
+            .hasImplementationClass("org.gradle.plugin.TestPlugin")
+            .hasConfigurationCache(SUPPORTED);
     }
 }
