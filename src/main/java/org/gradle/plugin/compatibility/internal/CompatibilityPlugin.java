@@ -34,7 +34,7 @@ public class CompatibilityPlugin implements Plugin<Project> {
 
                     CompatibilityProjectExtension.install(project);
 
-                    CompatibilityStrategy strategy = CompatibilityStrategyFactory.getStrategy();
+                    CompatibilityStrategy strategy = CompatibilityStrategy.getInstance();
 
                     project.getExtensions().configure(GradlePluginDevelopmentExtension.class, gradlePlugins -> {
                         gradlePlugins.getPlugins().configureEach(decl -> {

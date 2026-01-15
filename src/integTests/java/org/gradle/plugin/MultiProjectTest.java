@@ -104,7 +104,6 @@ class MultiProjectTest extends CompatibilityTestBase {
                         compatibility {
                             features {
                                 configurationCache.set(true)
-                                isolatedProjects.set(false)
                             }
                         }
                     }
@@ -125,7 +124,6 @@ class MultiProjectTest extends CompatibilityTestBase {
                         compatibility {
                             features {
                                 configurationCache.set(false)
-                                isolatedProjects.set(true)
                             }
                         }
                     }
@@ -140,12 +138,10 @@ class MultiProjectTest extends CompatibilityTestBase {
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
         assertPluginDescriptor("plugin-a", "com.example.plugin-a")
-                .hasConfigurationCache(SUPPORTED)
-                .hasIsolatedProjects(UNSUPPORTED);
+            .hasConfigurationCache(SUPPORTED);
 
         assertPluginDescriptor("plugin-b", "com.example.plugin-b")
-                .hasConfigurationCache(UNSUPPORTED)
-                .hasIsolatedProjects(SUPPORTED);
+            .hasConfigurationCache(UNSUPPORTED);
     }
 
     @Test
@@ -196,9 +192,8 @@ class MultiProjectTest extends CompatibilityTestBase {
         assertPluginDescriptor("com.example.root-plugin")
                 .hasConfigurationCache(SUPPORTED);
 
-        // Subproject plugin has no compatibility set - should be UNKNOWN
+        // Subproject plugin has no compatibility set - should be UNDECLARED
         assertPluginDescriptor("subproject", "com.example.sub-plugin")
-                .hasConfigurationCache(UNDECLARED)
-                .hasIsolatedProjects(UNDECLARED);
+                .hasConfigurationCache(UNDECLARED);
     }
 }

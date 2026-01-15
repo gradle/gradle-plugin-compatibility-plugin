@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gradle.plugin.compatibility.internal.CompatibilityStrategyFactory.EXTENSION_AWARE_MIN_VERSION;
+import static org.gradle.plugin.compatibility.internal.CompatibilityStrategy.EXTENSION_AWARE_MIN_VERSION;
 
 /**
  * Base class for compatibility plugin integration tests.
@@ -262,11 +262,6 @@ public abstract class CompatibilityTestBase {
         @CanIgnoreReturnValue
         public PluginDescriptorAssertion hasConfigurationCache(String supportLevel) {
             return hasFeature(CompatibilityDeclarationProtocol.FEATURE_CONFIGURATION_CACHE, supportLevel);
-        }
-
-        @CanIgnoreReturnValue
-        public PluginDescriptorAssertion hasIsolatedProjects(String supportLevel) {
-            return hasFeature(CompatibilityDeclarationProtocol.FEATURE_ISOLATED_PROJECTS, supportLevel);
         }
     }
 }

@@ -2,7 +2,7 @@ import org.gradle.plugin.compatibility.compatibility
 
 plugins {
     `java-gradle-plugin`
-    id("org.gradle.plugin-compatibility") version "9.1.0"
+    id("org.gradle.plugin-compatibility") version "1.0.0"
 }
 
 gradlePlugin {

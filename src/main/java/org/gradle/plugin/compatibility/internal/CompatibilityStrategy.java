@@ -21,13 +21,15 @@ import org.gradle.api.Project;
 import org.gradle.plugin.compatibility.CompatibilityExtension;
 import org.gradle.plugin.compatibility.CompatibleFeatures;
 import org.gradle.plugin.devel.PluginDeclaration;
-import org.jspecify.annotations.Nullable;
+import org.gradle.util.GradleVersion;
 
 /**
  * Strategy for configuring and retrieving compatibility information from plugin declarations.
  * Different strategies are used depending on the Gradle version.
  */
 public interface CompatibilityStrategy {
+    // PluginDeclaration becomes ExtensionAware only in Gradle 8.14
+    GradleVersion EXTENSION_AWARE_MIN_VERSION = GradleVersion.version("8.14");
 
     /**
      * Creates or registers a compatibility extension for the given plugin declaration.
@@ -37,11 +39,14 @@ public interface CompatibilityStrategy {
     /**
      * Extracts compatibility features from the given plugin declaration.
      */
-    @Nullable
     CompatibleFeatures extractFeatures(PluginDeclaration declaration, Project project);
 
     /**
      * Configures the compatibility extension for the given plugin declaration.
      */
-    void configure(PluginDeclaration declaration, Project project, Action<CompatibilityExtension> configuration);
+    void configure(PluginDeclaration declaration, Action<? super CompatibilityExtension> configuration);
+
+    static CompatibilityStrategy getInstance() {
+        return CompatibilityStrategyHolder.INSTANCE;
+    }
 }
