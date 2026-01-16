@@ -58,8 +58,8 @@ kotlin {
 }
 
 gradlePlugin {
-    website = "https://github.com/gradle/compatibility-plugin"
-    vcsUrl = "https://github.com/gradle/compatibility-plugin.git"
+    website = "https://github.com/gradle/gradle-plugin-compatibility-plugin"
+    vcsUrl = "https://github.com/gradle/gradle-plugin-compatibility-plugin.git"
 
     plugins {
         register("compatibilityPlugin") {
