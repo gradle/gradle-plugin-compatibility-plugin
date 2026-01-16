@@ -12,7 +12,7 @@ It adds an extension to each `PluginDeclaration` that you can use to define comp
 
 ```kotlin
 // IMPORTANT: You must explicitly import the extension function in Kotlin DSL
-import org.gradle.plugin.compatibility
+import org.gradle.plugin.compatibility.compatibility
 
 plugins {
     id("java-gradle-plugin")
