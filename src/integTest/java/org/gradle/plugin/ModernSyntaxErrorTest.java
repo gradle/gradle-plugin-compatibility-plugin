@@ -64,7 +64,7 @@ class ModernSyntaxErrorTest extends CompatibilityTestBase {
         var result = runGradleAndFail("jar");
 
         assertThat(result.getOutput())
-                .contains("compatibility { ... } syntax is only supported since Gradle 8.14+")
-                .contains("Pass PluginDeclaration explicitly");
+            .contains("compatibility { ... } syntax is only supported since Gradle 8.14+")
+            .contains("Pass PluginDeclaration explicitly");
     }
 }

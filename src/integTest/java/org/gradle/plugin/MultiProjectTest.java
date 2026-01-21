@@ -80,8 +80,8 @@ class MultiProjectTest extends CompatibilityTestBase {
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
         assertPluginDescriptor("com.example.root-plugin")
-                .hasImplementationClass("com.example.RootPlugin")
-                .hasConfigurationCache(SUPPORTED);
+            .hasImplementationClass("com.example.RootPlugin")
+            .hasConfigurationCache(SUPPORTED);
     }
 
     @Test
@@ -190,10 +190,10 @@ class MultiProjectTest extends CompatibilityTestBase {
 
         // Root plugin has compatibility set
         assertPluginDescriptor("com.example.root-plugin")
-                .hasConfigurationCache(SUPPORTED);
+            .hasConfigurationCache(SUPPORTED);
 
         // Subproject plugin has no compatibility set - should be UNDECLARED
         assertPluginDescriptor("subproject", "com.example.sub-plugin")
-                .hasConfigurationCache(UNDECLARED);
+            .hasConfigurationCache(UNDECLARED);
     }
 }

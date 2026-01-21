@@ -91,7 +91,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Run integration tests
-        run: ./gradlew -s integTests
+        run: ./gradlew -s integTest
 
       - name: Upload test results
         if: always()

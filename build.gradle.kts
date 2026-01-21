@@ -134,7 +134,7 @@ testing {
             }
         }
 
-        val integTests by registering(JvmTestSuite::class) {
+        val integTest by registering(JvmTestSuite::class) {
             dependencies {
                 implementation(project())
                 implementation(gradleTestKit())
@@ -144,7 +144,6 @@ testing {
                 all {
                     testTask.configure {
                         val pluginMetadata = tasks.pluginUnderTestMetadata
-                        dependsOn(pluginMetadata)
                         classpath += files(pluginMetadata)
                     }
                 }
@@ -163,7 +162,7 @@ testing {
         }
 
         tasks.check {
-            dependsOn(integTests)
+            dependsOn(integTest)
         }
     }
 }
@@ -206,7 +205,7 @@ tasks {
     }
 
     register("checkstyle") {
-        dependsOn("checkstyleMain", "checkstyleTest", "checkstyleIntegTests")
+        dependsOn("checkstyleMain", "checkstyleTest", "checkstyleIntegTest")
     }
 }
 

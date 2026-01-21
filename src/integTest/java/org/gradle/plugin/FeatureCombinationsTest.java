@@ -49,11 +49,7 @@ class FeatureCombinationsTest extends CompatibilityTestBase {
         "undefined, UNDECLARED",
     })
     @DisplayName("All feature combinations including undefined")
-    void testAllFeatureCombinations(
-            String ccValue,
-            String expectedCc
-    ) throws IOException {
-
+    void testAllFeatureCombinations(String ccValue, String expectedCc) throws IOException {
         withSettingsFile();
 
         String featuresBlock = buildFeaturesBlock(ccValue);

@@ -53,15 +53,13 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
         CompatibilityStrategy strategy = CompatibilityStrategy.getInstance();
         outputDirectory = task.getOutputDirectory();
         compatibilityData = project.provider(() ->
-                task.getDeclarations()
-                        .get()
-                        .stream()
-                        .collect(
-                                Collectors.toMap(
-                                        PluginDeclaration::getId,
-                                        declaration -> strategy.extractFeatures(declaration, project)
-                                )
-                        )
+            task.getDeclarations().get().stream()
+                .collect(
+                    Collectors.toMap(
+                        PluginDeclaration::getId,
+                        declaration -> strategy.extractFeatures(declaration, project)
+                    )
+                )
         );
     }
 
@@ -73,7 +71,7 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
     public Provider<Map<String, Map<String, String>>> getSerializableCompatibilityData() {
         return compatibilityData.flatMap(data -> {
             MapProperty<String, Map<String, String>> result = uncheckedCast(
-                    objectFactory.mapProperty(String.class, Map.class)
+                objectFactory.mapProperty(String.class, Map.class)
             );
             data.forEach((id, features) -> result.put(id, compatibilityAsMap(features)));
             return result;
@@ -103,9 +101,9 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
         Path propertiesFile = outputDirectory.get().file(pluginId + ".properties").getAsFile().toPath();
         try (BufferedWriter writer = Files.newBufferedWriter(propertiesFile, StandardOpenOption.APPEND)) {
             writeFeatureSupportLevel(
-                    writer,
-                    CompatibilityDeclarationProtocol.FEATURE_CONFIGURATION_CACHE,
-                    features.getConfigurationCache()
+                writer,
+                CompatibilityDeclarationProtocol.FEATURE_CONFIGURATION_CACHE,
+                features.getConfigurationCache()
             );
         } catch (IOException ex) {
             throw new GradleException("Failed to write supported features to " + propertiesFile, ex);
@@ -122,9 +120,9 @@ public abstract class SerializeCompatibilityDataAction implements Action<Task> {
 
     private static Provider<String> toSupportLevel(Property<Boolean> property) {
         return property.map(
-                        value -> value
-                                ? CompatibilityDeclarationProtocol.DECLARED_SUPPORTED
-                                : CompatibilityDeclarationProtocol.DECLARED_UNSUPPORTED)
-                .orElse(CompatibilityDeclarationProtocol.UNDECLARED);
+                value -> value
+                    ? CompatibilityDeclarationProtocol.DECLARED_SUPPORTED
+                    : CompatibilityDeclarationProtocol.DECLARED_UNSUPPORTED)
+            .orElse(CompatibilityDeclarationProtocol.UNDECLARED);
     }
 }
