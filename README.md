@@ -1,6 +1,6 @@
 # Gradle Plugin Compatibility Plugin
 
-This plugin extends a Gradle plugin block, and adds extra metainformation that the [Gradle Plugin Portal](https://plugins.gradle.org/) can use.
+This plugin extends a Gradle plugin block and adds extra metainformation that the [Gradle Plugin Portal](https://plugins.gradle.org/) can use.
 If you want a badge for your plugin in the Plugin Portal, this is the plugin that you need.
 
 ## How to use
@@ -118,6 +118,6 @@ They cannot be derived from task outputs or other values that are only available
 
 This plugin supports Gradle versions starting with Gradle 7.4.2.
 In Groovy DSL, for versions of Gradle older than 8.14, the "legacy" configuration syntax (`compatibility(it)`) must be used.
-There are no additional restrictions to the JVM version, anything capable of running the supported Gradle version will do.
+There are no additional restrictions on the JVM version; anything capable of running the supported Gradle version will do.
 
 This plugin fully supports [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html) and [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html).
