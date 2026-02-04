@@ -1,4 +1,4 @@
+* @gradle/bt-tide
+
 .teamcity/ @gradle/bt-developer-productivity
 .github/ @gradle/bt-developer-productivity
-
-* @gradle/bt-tide
