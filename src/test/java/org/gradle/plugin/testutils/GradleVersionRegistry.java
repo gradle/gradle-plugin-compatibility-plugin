@@ -16,8 +16,8 @@
 
 package org.gradle.plugin.testutils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import org.gradle.util.GradleVersion;
 import org.jspecify.annotations.Nullable;
 
