@@ -17,7 +17,7 @@ build-errorprone = "com.google.errorprone:error_prone_core:2.42.0"
 build-nullaway = "com.uber.nullaway:nullaway:0.12.14"
 
 # Test dependencies
-test-assertj-core = "org.assertj:assertj-core:3.25.3"
+test-assertj-core = "org.assertj:assertj-core:3.27.7"
 test-jackson-databind = "com.fasterxml.jackson.core:jackson-databind:2.20.0"
 test-junit-bom = "org.junit:junit-bom:6.0.2"
 test-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
