@@ -13,7 +13,7 @@ jvm-testTarget = "17"
 # We are stuck on 2.42.0, because
 #  - Gradle 7.4.2 (our oldest cross-version test target) can only use maximum JDK 17
 #  - ErrorProne 2.42.0+ required JDK 21
-build-errorprone = "com.google.errorprone:error_prone_core:2.42.0"
+build-errorprone = "com.google.errorprone:error_prone_core:2.46.0"
 build-nullaway = "com.uber.nullaway:nullaway:0.12.14"
 
 # Test dependencies
