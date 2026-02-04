@@ -57,6 +57,10 @@ kotlin {
     jvmToolchain(libs.versions.jvm.compileJdk)
 }
 
+checkstyle {
+    toolVersion = libs.checkstyle.map { it.version }.get()
+}
+
 gradlePlugin {
     website = "https://github.com/gradle/gradle-plugin-compatibility-plugin"
     vcsUrl = "https://github.com/gradle/gradle-plugin-compatibility-plugin.git"
