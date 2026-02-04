@@ -59,8 +59,7 @@
          <trusted-key id="223D3A74B068ECA354DC385CE126833F9CF64915" group="org.apache.xbean"/>
          <trusted-key id="28118C070CB22A0175A2E8D43D12CA2AC19F3181">
             <trusting group="com.fasterxml.jackson.core"/>
-            <trusting group="com.fasterxml.woodstox"/>
-            <trusting group="^com[.]fasterxml[.]jackson($|([.].*))" regex="true"/>
+            <trusting group="tools.jackson.core"/>
          </trusted-key>
          <trusted-key id="2DB4F1EF0FA761ECC4EA935C86FDC7E2A11262CB" group="commons-beanutils"/>
          <trusted-key id="2E3A1AFFE42B5F53AF19F780BCF4173966770193" group="org.jetbrains" name="annotations"/>
