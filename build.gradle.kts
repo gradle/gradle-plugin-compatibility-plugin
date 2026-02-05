@@ -50,6 +50,12 @@ repositories {
 dependencies {
     errorprone(libs.build.errorprone)
     errorprone(libs.build.nullaway)
+
+    constraints {
+        checkstyle(libs.build.commonsLang3) {
+            because("CVE-2025-48924")
+        }
+    }
 }
 
 kotlin {
@@ -58,7 +64,7 @@ kotlin {
 }
 
 checkstyle {
-    toolVersion = libs.checkstyle.map { it.version }.get()
+    toolVersion = libs.build.checkstyle.map { it.version }.get()
 }
 
 gradlePlugin {
@@ -209,7 +215,7 @@ tasks {
     }
 
     register("checkstyle") {
-        dependsOn("checkstyleMain", "checkstyleTest", "checkstyleIntegTest")
+        dependsOn(withType<Checkstyle>())
     }
 }
 
