@@ -10,7 +10,7 @@ jvm-testTarget = "17"
 
 [libraries]
 # Build dependencies
-build-checkstyle = "com.puppycrawl.tools:checkstyle:12.3.1"
+build-checkstyle = "com.puppycrawl.tools:checkstyle:13.2.0"
 # Upgraded dependency of checkstyle
 build-commonsLang3 = "org.apache.commons:commons-lang3:3.20.0"
 # We are stuck on 2.42.0, because
