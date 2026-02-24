@@ -16,15 +16,15 @@
 
 package org.gradle.plugin.compatibility;
 
-import org.gradle.api.Incubating;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 
 /**
  * Defines the plugin's compatibility with various Gradle features.
+ *
+ * @since 1.0.0
  */
-@Incubating
 public abstract class CompatibleFeatures {
     /**
      * Defines the compatibility with the Configuration Cache.
@@ -36,6 +36,7 @@ public abstract class CompatibleFeatures {
      * In the future, the Gradle Plugin Portal may stop accepting plugins with undefined compatibility status.
      *
      * @return the Property object
+     * @since 1.0.0
      */
     @Input
     @Optional

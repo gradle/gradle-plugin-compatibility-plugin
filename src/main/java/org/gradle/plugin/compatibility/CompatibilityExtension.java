@@ -17,7 +17,6 @@
 package org.gradle.plugin.compatibility;
 
 import org.gradle.api.Action;
-import org.gradle.api.Incubating;
 import org.gradle.api.model.ObjectFactory;
 
 import javax.inject.Inject;
@@ -30,7 +29,7 @@ import javax.inject.Inject;
  * function. It must be explicitly imported.
  * <pre>
  * <i>// build.gradle.kts</i>
- * <i> Import is necessary in Kotlin Build Script </i>
+ * <i>// Import is necessary in Kotlin Build Script </i>
  * import org.gradle.plugin.compatibility.compatibility
  * plugins {
  *     `java-gradle-plugin`
@@ -82,14 +81,17 @@ import javax.inject.Inject;
  *     }
  * }
  * </pre>
+ *
+ * @since 1.0.0
  */
-@Incubating
 public abstract class CompatibilityExtension {
 
     private final CompatibleFeatures features;
 
     /**
      * Users should not be creating this class directly.
+     *
+     * @since 1.0.0
      */
     @Inject
     public CompatibilityExtension(ObjectFactory objectFactory) {
@@ -100,6 +102,7 @@ public abstract class CompatibilityExtension {
      * Returns the features to configure.
      *
      * @return the {@link CompatibleFeatures} instance
+     * @since 1.0.0
      */
     public CompatibleFeatures getFeatures() {
         return features;
@@ -109,6 +112,7 @@ public abstract class CompatibilityExtension {
      * Applies the action to configure {@link CompatibleFeatures}.
      *
      * @param action the configuration action
+     * @since 1.0.0
      */
     public void features(Action<? super CompatibleFeatures> action) {
         action.execute(features);

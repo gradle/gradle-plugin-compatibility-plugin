@@ -22,6 +22,8 @@ import org.gradle.plugin.devel.PluginDeclaration
 
 /**
  * Applies compatibility configuration defined in `action` to the `PluginDeclaration`.
+ *
+ * @since 1.0.0
  */
 fun PluginDeclaration.compatibility(action: Action<in CompatibilityExtension>) {
     CompatibilityStrategy.getInstance().configure(this, action)
