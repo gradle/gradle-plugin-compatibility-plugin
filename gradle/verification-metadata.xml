@@ -143,14 +143,14 @@
             <sha512 value="e126b7ccf3e42fd1984a0beef1004a7269a337c202e59e04e8e2af714280d2f2d8d2ba5e6f59481b8dcd34aaf35c966a688d0b48ec7e96f102c274dc0d3b381e" origin="Verified" reason="Artifact is not signed"/>
          </artifact>
       </component>
-      <component group="net.ltgt.gradle" name="gradle-errorprone-plugin" version="4.3.0">
-         <artifact name="gradle-errorprone-plugin-4.3.0.jar">
-            <sha512 value="ce11723652c052c52d15a0c9a7d19efadeff95ce272bdd633236b131ac80831dd0d602652f26df6087cb5bd5986d5758aaebc399c74accd89cf563e25e289be9" origin="Verified" reason="Artifact is not signed"/>
+      <component group="net.ltgt.gradle" name="gradle-errorprone-plugin" version="5.0.0">
+         <artifact name="gradle-errorprone-plugin-5.0.0.jar">
+            <sha512 value="79617c93477ae19c6d209980bbbea2a33ecf625d63cc42c14df9937076a3e3db02487d1810ba7a50ed35ff60e7c49ca127d200357ffc1a5f41652cfb97267c26" origin="Verified" reason="Artifact is not signed"/>
          </artifact>
       </component>
-      <component group="net.ltgt.gradle" name="gradle-nullaway-plugin" version="2.3.0">
-         <artifact name="gradle-nullaway-plugin-2.3.0.jar">
-            <sha512 value="beb8e92aac6fae9028c74d946e499511450770c341a6589c8b4035bf46e8ef4b53bf397d797ec3bee3829bb06dda07156ea19e7cbb82b4828373aeddd542ba93" origin="Verified" reason="Artifact is not signed"/>
+      <component group="net.ltgt.gradle" name="gradle-nullaway-plugin" version="3.0.0">
+         <artifact name="gradle-nullaway-plugin-3.0.0.jar">
+            <sha512 value="8aa0129c1c85f0ccbfcc331894e92e97867d08aea6b7d41cb37c65743b59cd843bd479f166b7eb040aec14f0fb9d31ec92ebb09cc50c6fdd92c7a73d50a093c3" origin="Verified" reason="Artifact is not signed"/>
          </artifact>
       </component>
    </components>
