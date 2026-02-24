@@ -1,6 +1,6 @@
 [versions]
 # Project configuration
-project = "0.1.0"
+project = "1.0.0"
 # JDK used for compilation
 jvm-compileJdk = "17"
 # Target Java version for production code
