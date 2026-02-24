@@ -16,6 +16,7 @@
 
 import net.ltgt.gradle.errorprone.errorprone
 import net.ltgt.gradle.nullaway.nullaway
+import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -30,6 +31,7 @@ plugins {
     checkstyle
     signing
 
+    alias(libs.plugins.compatibility)
     alias(libs.plugins.errorprone)
     alias(libs.plugins.nullaway)
     alias(libs.plugins.pluginPublish)
@@ -78,9 +80,14 @@ gradlePlugin {
             displayName = "Gradle Plugin Compatibility Plugin"
             description = "Adds compatibility metadata to Gradle plugins for display on the Plugin Portal"
             tags = listOf("gradle", "plugin", "compatibility")
+
+            compatibility {
+                features {
+                    configurationCache = true
+                }
+            }
         }
     }
-    // TODO(mlopatkin) Apply the plugin and define its compatibility.
 }
 
 publishing {

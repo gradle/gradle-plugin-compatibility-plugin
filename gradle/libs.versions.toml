@@ -1,6 +1,6 @@
 [versions]
 # Project configuration
-project = "0.1.0"
+project = "1.0.0"
 # JDK used for compilation
 jvm-compileJdk = "17"
 # Target Java version for production code
@@ -29,6 +29,7 @@ test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params" 
 test-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 
 [plugins]
+compatibility = "org.gradle.plugin-compatibility:0.1.0"
 errorprone = "net.ltgt.errorprone:4.3.0"
 nullaway = "net.ltgt.nullaway:2.3.0"
 pluginPublish = "com.gradle.plugin-publish:2.0.0"
