@@ -8,6 +8,8 @@ If you want a badge for your plugin in the Plugin Portal, this is the plugin tha
 This plugin works with the [Gradle Plugin development plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html).
 It adds an extension to each `PluginDeclaration` that you can use to define compatibility metadata.
 
+It's also automatically applied by the [Plugin Publishing Plugin](https://plugins.gradle.org/plugin/com.gradle.plugin-publish) 2.1.0 and later.
+
 ### Kotlin DSL
 
 ```kotlin
@@ -16,7 +18,7 @@ import org.gradle.plugin.compatibility.compatibility
 
 plugins {
     id("java-gradle-plugin")
-    id("org.gradle.plugin-compatibility") version "1.0.0"
+    id("org.gradle.plugin-compatibility") version "1.0.0" // or id("com.gradle.plugin-publish") version "2.1.0"
 }
 
 gradlePlugin {
