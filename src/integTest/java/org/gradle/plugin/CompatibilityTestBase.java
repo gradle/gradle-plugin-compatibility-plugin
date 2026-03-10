@@ -16,8 +16,8 @@
 
 package org.gradle.plugin;
 
+import org.assertj.core.annotation.CanIgnoreReturnValue;
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.util.CanIgnoreReturnValue;
 import org.gradle.plugin.compatibility.CompatibilityDeclarationProtocol;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
