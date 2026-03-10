@@ -26,13 +26,13 @@ import java.net.URI
 plugins {
     `java-gradle-plugin`
     `jvm-test-suite`
-    `kotlin-dsl`
     `maven-publish`
     checkstyle
     signing
 
     alias(libs.plugins.compatibility)
     alias(libs.plugins.errorprone)
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.nullaway)
     alias(libs.plugins.pluginPublish)
 }
@@ -63,6 +63,16 @@ dependencies {
 kotlin {
     // Set up the JDK used to compile Java and Kotlin code.
     jvmToolchain(libs.versions.jvm.compileJdk)
+    compilerOptions {
+        // Compile production code to Kotlin 1.8 to ensure compatibility with older Gradle versions, like 7.4
+        languageVersion = KotlinVersion.KOTLIN_1_8
+        apiVersion = KotlinVersion.KOTLIN_1_8
+        // Compile production code to Java 8 bytecode
+        jvmTarget = JvmTarget.JVM_1_8
+    }
+
+    // Not downgrading core libraries causes Metadata incompatibility (unknown protobuf tag).
+    coreLibrariesVersion = "1.8.0"
 }
 
 checkstyle {
@@ -198,18 +208,6 @@ tasks {
                 error()
                 onlyNullMarked = true
             }
-        }
-    }
-
-    withType<KotlinCompile>().configureEach {
-        // I don't understand why, but setting this config in `kotlin` block doesn't work, compilation on Gradle 7.4 fails
-        // with an error in Protobuf metadata parsing.
-        compilerOptions {
-            // Compile production code to Kotlin 1.8 to ensure compatibility with older Gradle versions, like 7.4
-            languageVersion = KotlinVersion.KOTLIN_1_8
-            apiVersion = KotlinVersion.KOTLIN_1_8
-            // Compile production code to Java 8 bytecode
-            jvmTarget = JvmTarget.JVM_1_8
         }
     }
 
