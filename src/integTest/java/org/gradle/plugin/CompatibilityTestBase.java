@@ -70,7 +70,7 @@ public abstract class CompatibilityTestBase {
             "8.0.2", // First 8.x release
             "8.14.3", // Last 8.x release
             "9.0.0", // First 9.x release
-            "9.2.1" // Last 9.x release
+            "9.4.0" // Last 9.x release
         ).map(GradleVersion::version);
 
         // Skip Gradle 9+ when running with Java 8
