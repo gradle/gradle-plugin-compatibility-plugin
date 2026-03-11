@@ -16,8 +16,8 @@
 
 package org.gradle.plugin;
 
+import org.assertj.core.annotation.CanIgnoreReturnValue;
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.util.CanIgnoreReturnValue;
 import org.gradle.plugin.compatibility.CompatibilityDeclarationProtocol;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
@@ -70,7 +70,7 @@ public abstract class CompatibilityTestBase {
             "8.0.2", // First 8.x release
             "8.14.3", // Last 8.x release
             "9.0.0", // First 9.x release
-            "9.2.1" // Last 9.x release
+            "9.4.0" // Last 9.x release
         ).map(GradleVersion::version);
 
         // Skip Gradle 9+ when running with Java 8

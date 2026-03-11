@@ -7,6 +7,8 @@ jvm-compileJdk = "17"
 jvm-productionTarget = "8"
 # Target Java version for test code
 jvm-testTarget = "17"
+# Kotlin version
+kotlin = "2.2.0"
 
 [libraries]
 # Build dependencies
@@ -31,5 +33,6 @@ test-junit-platform-launcher = { module = "org.junit.platform:junit-platform-lau
 [plugins]
 compatibility = "org.gradle.plugin-compatibility:0.1.0"
 errorprone = "net.ltgt.errorprone:5.0.0"
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 nullaway = "net.ltgt.nullaway:3.0.0"
 pluginPublish = "com.gradle.plugin-publish:2.0.0"
