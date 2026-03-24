@@ -54,6 +54,7 @@
          <trusted-key id="1A55F091AD28C07F831FA44D7905DE25C78AD456" group="com.google.protobuf"/>
          <trusted-key id="1BD97A6A154E7810EE0BC832E2F38302C8075E3D">
             <trusting group="com.gradle.publish" name="plugin-publish-plugin"/>
+            <trusting group="io.github.gradle" name="gradle-org-conventions-plugin"/>
             <trusting group="org.gradle.kotlin" name="gradle-kotlin-dsl-plugins"/>
             <trusting group="org.gradle.plugin"/>
          </trusted-key>
@@ -133,19 +134,14 @@
       </trusted-keys>
    </configuration>
    <components>
-      <component group="io.github.gradle" name="gradle-org-conventions-plugin" version="0.13.0">
-         <artifact name="gradle-org-conventions-plugin-0.13.0.jar">
-            <sha512 value="321532c0ad8f577266a8a66822ab9c993fa1aa6f166803e89bbd2aa2a0959618cb67a5d027d0f6eff0a4a76cb1a6af98d8916291378c9227e1e8faaad8fda0b0" origin="Verified" reason="Artifact is not signed"/>
-         </artifact>
-      </component>
       <component group="javax.inject" name="javax.inject" version="1">
          <artifact name="javax.inject-1.jar">
             <sha512 value="e126b7ccf3e42fd1984a0beef1004a7269a337c202e59e04e8e2af714280d2f2d8d2ba5e6f59481b8dcd34aaf35c966a688d0b48ec7e96f102c274dc0d3b381e" origin="Verified" reason="Artifact is not signed"/>
          </artifact>
       </component>
-      <component group="net.ltgt.gradle" name="gradle-errorprone-plugin" version="5.0.0">
-         <artifact name="gradle-errorprone-plugin-5.0.0.jar">
-            <sha512 value="79617c93477ae19c6d209980bbbea2a33ecf625d63cc42c14df9937076a3e3db02487d1810ba7a50ed35ff60e7c49ca127d200357ffc1a5f41652cfb97267c26" origin="Verified" reason="Artifact is not signed"/>
+      <component group="net.ltgt.gradle" name="gradle-errorprone-plugin" version="5.1.0">
+         <artifact name="gradle-errorprone-plugin-5.1.0.jar">
+            <sha512 value="ed55c725b059011154ea6a4b8c0031a91b8768accb70993e0c93e563d29fc32680857c612f023a77d1dd408951cce44b0a36c362968d2333f1183ae7156e4141" origin="Verified" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="net.ltgt.gradle" name="gradle-nullaway-plugin" version="3.0.0">
