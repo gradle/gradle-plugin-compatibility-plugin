@@ -31,7 +31,7 @@ test-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params" 
 test-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 
 [plugins]
-compatibility = "org.gradle.plugin-compatibility:0.1.0"
+compatibility = "org.gradle.plugin-compatibility:1.0.0"
 errorprone = "net.ltgt.errorprone:5.1.0"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 nullaway = "net.ltgt.nullaway:3.0.0"
