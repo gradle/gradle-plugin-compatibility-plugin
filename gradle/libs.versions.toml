@@ -8,7 +8,7 @@ jvm-productionTarget = "8"
 # Target Java version for test code
 jvm-testTarget = "17"
 # Kotlin version
-kotlin = "2.2.0"
+kotlin = "2.3.20"
 
 [libraries]
 # Build dependencies
