@@ -68,7 +68,7 @@ public abstract class CompatibilityTestBase {
             "7.4.2", // Oldest supported
             "7.6.6", // Latest 7.x
             "8.0.2", // First 8.x release
-            "8.14.3", // Last 8.x release
+            "8.14.5", // Last 8.x release
             "9.0.0", // First 9.x release
             "9.5.1" // Last 9.x release
         ).map(GradleVersion::version);
