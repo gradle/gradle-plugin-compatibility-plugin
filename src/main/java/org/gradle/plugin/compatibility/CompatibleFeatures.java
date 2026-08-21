@@ -41,4 +41,20 @@ public abstract class CompatibleFeatures {
     @Input
     @Optional
     public abstract Property<Boolean> getConfigurationCache();
+
+    /**
+     * Defines the compatibility with Isolated Projects.
+     * <p>
+     * Due to internal limitations, the value must be computable at configuration time. In particular, it cannot be
+     * derived from a task output.
+     * <p>
+     * When this property has no value, the compatibility is considered "undefined".
+     * In the future, the Gradle Plugin Portal may stop accepting plugins with undefined compatibility status.
+     *
+     * @return the Property object
+     * @since 1.1.0
+     */
+    @Input
+    @Optional
+    public abstract Property<Boolean> getIsolatedProjects();
 }

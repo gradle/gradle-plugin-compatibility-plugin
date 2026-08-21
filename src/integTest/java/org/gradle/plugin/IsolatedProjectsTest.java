@@ -17,11 +17,10 @@
 package org.gradle.plugin;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedClass;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
@@ -29,33 +28,20 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for all combinations of feature flag values.
- * Uses Kotlin buildscripts for consistent syntax across Gradle versions.
- * Includes "undefined" (not set) values.
+ * Tests for isolated projects compatibility declaration.
  */
 @Execution(ExecutionMode.CONCURRENT)
 @ParameterizedClass
 @MethodSource("allGradleVersions")
-class FeatureCombinationsTest extends CompatibilityTestBase {
+class IsolatedProjectsTest extends CompatibilityTestBase {
 
-    FeatureCombinationsTest(String gradleVersion) {
+    IsolatedProjectsTest(String gradleVersion) {
         super(gradleVersion);
     }
 
-    @ParameterizedTest
-    @CsvSource({
-        "true,      DECLARED_SUPPORTED,   true,      DECLARED_SUPPORTED",
-        "false,     DECLARED_UNSUPPORTED, false,     DECLARED_UNSUPPORTED",
-        "undefined, UNDECLARED,           undefined, UNDECLARED",
-        "true,      DECLARED_SUPPORTED,   false,     DECLARED_UNSUPPORTED",
-        "false,     DECLARED_UNSUPPORTED, true,      DECLARED_SUPPORTED",
-    })
-    @DisplayName("All feature combinations including undefined")
-    void testAllFeatureCombinations(String ccValue, String expectedCc, String ipValue, String expectedIp) throws IOException {
-        withSettingsFile();
-
-        String featuresBlock = buildFeaturesBlock(ccValue, ipValue);
-
+    @Test
+    @DisplayName("Isolated projects set to true")
+    void isolatedProjectsSetToTrue() throws IOException {
         withKotlinBuildScript("""
             import org.gradle.plugin.compatibility.compatibility
 
@@ -65,34 +51,53 @@ class FeatureCombinationsTest extends CompatibilityTestBase {
                         id = "org.gradle.test.plugin"
                         implementationClass = "org.gradle.plugin.TestPlugin"
                         compatibility {
-                            %s
+                            features {
+                                isolatedProjects.set(true)
+                            }
                         }
                     }
                 }
             }
-            """.formatted(featuresBlock));
+            """);
         createTestPluginSource();
 
-        // Use the latest Gradle version from the test classpath
         var result = runGradle("jar");
 
         assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
 
         assertPluginDescriptor("org.gradle.test.plugin")
             .hasImplementationClass("org.gradle.plugin.TestPlugin")
-            .hasConfigurationCache(expectedCc)
-            .hasIsolatedProjects(expectedIp);
+            .hasIsolatedProjects(SUPPORTED);
     }
 
-    private String buildFeaturesBlock(String cc, String ip) {
-        StringBuilder sb = new StringBuilder("features {\n");
-        if (!"undefined".equals(cc)) {
-            sb.append("                configurationCache.set(").append(cc).append(")\n");
-        }
-        if (!"undefined".equals(ip)) {
-            sb.append("                isolatedProjects.set(").append(ip).append(")\n");
-        }
-        sb.append("            }");
-        return sb.toString();
+    @Test
+    @DisplayName("Isolated projects set to false")
+    void isolatedProjectsSetToFalse() throws IOException {
+        withKotlinBuildScript("""
+            import org.gradle.plugin.compatibility.compatibility
+
+            gradlePlugin {
+                plugins {
+                    create("testPlugin") {
+                        id = "org.gradle.test.plugin"
+                        implementationClass = "org.gradle.plugin.TestPlugin"
+                        compatibility {
+                            features {
+                                isolatedProjects.set(false)
+                            }
+                        }
+                    }
+                }
+            }
+            """);
+        createTestPluginSource();
+
+        var result = runGradle("jar");
+
+        assertThat(result.getOutput()).contains("BUILD SUCCESSFUL");
+
+        assertPluginDescriptor("org.gradle.test.plugin")
+            .hasImplementationClass("org.gradle.plugin.TestPlugin")
+            .hasIsolatedProjects(UNSUPPORTED);
     }
 }

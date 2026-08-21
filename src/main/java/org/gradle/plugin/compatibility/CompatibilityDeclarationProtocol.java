@@ -57,4 +57,11 @@ public interface CompatibilityDeclarationProtocol {
      * @since 1.0.0
      */
     String FEATURE_CONFIGURATION_CACHE = "configuration-cache";
+
+    /**
+     * The Isolated Projects feature name.
+     *
+     * @since 1.1.0
+     */
+    String FEATURE_ISOLATED_PROJECTS = "isolated-projects";
 }

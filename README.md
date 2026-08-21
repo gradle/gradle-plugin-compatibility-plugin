@@ -108,6 +108,7 @@ In the `compatibility` block, you can define the following `features`:
 | Feature              | Description                                                                | Since version |
 |----------------------|----------------------------------------------------------------------------|---------------|
 | `configurationCache` | Indicates that the plugin is compatible with Gradle's [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html). | 1.0.0         |
+| `isolatedProjects`   | Indicates that the plugin is compatible with Gradle's [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html).   | 1.1.0         |
 
 See [`org.gradle.plugin.compatibility.CompatibleFeatures`](src/main/java/org/gradle/plugin/compatibility/CompatibleFeatures.java) for the full list.
 
