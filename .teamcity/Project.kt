@@ -37,6 +37,9 @@ object Project : Project({
         untrustedBuildsSettings {
             id = "UntrustedBuilds"
             defaultAction = UntrustedBuildsSettings.DefaultAction.APPROVE
+            // Untrusted builds must be approved by a member of the "Gradle Build Tool" user group.
+            // Without any rule the rule set is invalid and every untrusted build fails in preparation.
+            approvalRules = "group:GRADLEWARE_COMMI:1"
             manualRunsApproved = true
             enableLog = true
         }
