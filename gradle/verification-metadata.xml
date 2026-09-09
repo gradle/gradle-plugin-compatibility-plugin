@@ -56,7 +56,6 @@
             <trusting group="com.gradle.publish" name="plugin-publish-plugin"/>
             <trusting group="io.github.gradle" name="gradle-org-conventions-plugin"/>
             <trusting group="org.gradle.kotlin" name="gradle-kotlin-dsl-plugins"/>
-            <trusting group="org.gradle.plugin"/>
          </trusted-key>
          <trusted-key id="223D3A74B068ECA354DC385CE126833F9CF64915" group="org.apache.xbean"/>
          <trusted-key id="28118C070CB22A0175A2E8D43D12CA2AC19F3181">
@@ -123,6 +122,7 @@
             <trusting group="com.google.googlejavaformat"/>
          </trusted-key>
          <trusted-key id="F254B35617DC255D9344BCFA873A8E86B4372146" group="org.codehaus.plexus" name="plexus-utils"/>
+         <trusted-key id="F3FF33E96F18AA62DD580F9651FBF517CE6D6B80" group="org.gradle.plugin"/>
          <trusted-key id="FA77DCFEF2EE6EB2DEBEDD2C012579464D01C06A">
             <trusting group="org.codehaus.plexus"/>
             <trusting group="^org[.]apache($|([.].*))" regex="true"/>
