@@ -1,25 +1,20 @@
 name: TeamCity Build Trigger
 
-# Lets a maintainer start the required "Verify Gradle Plugin Compatibility Plugin"
-# TeamCity build by commenting `/verify` on a pull request.
+# Starts the required "Verify Gradle Plugin Compatibility Plugin" build when a member
+# comments `/verify` on a pull request.
 #
-# Why this exists: the `Verify` VCS trigger in .teamcity/Project.kt only auto-builds
-# the default branch, `devprod/*` and member pull requests. Fork and dependabot pull
-# requests are deliberately left out, so their required check never appears and the
-# only way to unblock them is for a maintainer to start a build by hand. This is that
-# manual start, moved from the TeamCity UI onto the pull request.
+# The `Verify` trigger in .teamcity/Project.kt only auto-builds the default branch,
+# `devprod/*` and member pull requests, so fork and dependabot pull requests never get
+# the required check. This is the manual start they need, moved out of the TeamCity UI.
 #
 # Security notes:
-#   * `issue_comment` workflows always run the copy of this file on the default
-#     branch, so a pull request cannot change the rules below.
-#   * The job only runs for comments GitHub reports as authored by an OWNER or a
-#     MEMBER of the organization, matching the `+pr: github_role=MEMBER` filter on the
-#     trigger, so the TeamCity token is never handed to a run started by an outside
-#     contributor. `COLLABORATOR` is deliberately excluded: it also covers outside
-#     collaborators invited to this repository who are not organization members.
-#   * The TeamCity project uses `buildSettings = PREFER_VCS`, so a build started on a
-#     fork pull request runs the build steps *as defined in that pull request* and can
-#     read the project's secrets. Read the diff before commenting `/verify`.
+#   * `issue_comment` always runs the default-branch copy of this file, so a pull
+#     request cannot change the rules below, and no pull request code is checked out.
+#   * Only OWNER and MEMBER comments start the job, matching `+pr: github_role=MEMBER`
+#     on the trigger. `COLLABORATOR` is excluded — it also covers outside collaborators
+#     who are not organization members.
+#   * `buildSettings = PREFER_VCS` means a build on a fork pull request runs that
+#     branch's own build scripts with the project secrets. Read the diff first.
 
 on:
   issue_comment:
@@ -40,6 +35,7 @@ jobs:
       && (contains(github.event.comment.body, '/verify') || contains(github.event.comment.body, '/build'))
     runs-on: ubuntu-latest
     permissions:
+      id-token: write # assume the AWS role that reads the TeamCity token
       issues: write # react to the triggering comment and post the build link back
       pull-requests: read # read the pull request head revision
     steps:
@@ -84,12 +80,26 @@ jobs:
               content: 'eyes',
             })
 
+      - name: Configure AWS credentials
+        if: steps.parse.outputs.requested == 'true'
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          role-to-assume: arn:aws:iam::992382829881:role/GHASecrets_gradle-plugin-compatibility-plugin_all
+          aws-region: eu-central-1
+
+      - name: Get the TeamCity token
+        if: steps.parse.outputs.requested == 'true'
+        uses: aws-actions/aws-secretsmanager-get-secrets@v3.0.1
+        with:
+          secret-ids: |
+            TEAMCITY_ACCESS_TOKEN, gha/gradle-plugin-compatibility-plugin/_all/TEAMCITY_ACCESS_TOKEN
+
       - name: Trigger the Verify build
         id: trigger
         if: steps.parse.outputs.requested == 'true'
         uses: actions/github-script@v9.0.0
         env:
-          TEAMCITY_TOKEN: ${{ secrets.TEAMCITY_AUTOMATION_ACCESS_TOKEN }}
+          TEAMCITY_TOKEN: ${{ env.TEAMCITY_ACCESS_TOKEN }}
           BUILD_TYPE_ID: VerifyGradlePluginCompatibilityPlugin
           # The `pullRequests` build feature makes TeamCity track every pull request as
           # a `pull/<number>` logical branch, and a build on that branch publishes its
@@ -138,15 +148,10 @@ jobs:
             const { BUILD_URL, BUILD_BRANCH, HEAD_SHA, IS_FORK } = process.env
 
             const lines = [
-              `🚀 Started [Verify Gradle Plugin Compatibility Plugin](${BUILD_URL}) on \`${BUILD_BRANCH}\` at ${HEAD_SHA.substring(0, 7)}.`,
-              '',
-              'The result is published back here as the **Verify Gradle Plugin Compatibility Plugin** check. It covers this commit only, so comment `/verify` again after every push.',
+              `🚀 [Verify build started](${BUILD_URL}) on \`${BUILD_BRANCH}\` at ${HEAD_SHA.substring(0, 7)}. The check lands here when it finishes — comment \`/verify\` again after each push.`,
             ]
             if (IS_FORK === 'true') {
-              lines.push(
-                '',
-                '⚠️ This pull request comes from a fork, so the build runs its `.teamcity/**` and Gradle build as defined in the branch, with access to the project secrets.',
-              )
+              lines.push('', "⚠️ Fork pull request: the build runs this branch's own build scripts.")
             }
 
             await github.rest.issues.createComment({
@@ -168,5 +173,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `❌ Could not start the Verify build — see [the workflow run](${process.env.RUN_URL}) for details. Starting it from the TeamCity UI still works.`,
+              body: `❌ Could not start the Verify build ([details](${process.env.RUN_URL})). The TeamCity UI still works.`,
             })
