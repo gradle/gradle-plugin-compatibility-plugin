@@ -12,9 +12,11 @@ name: TeamCity Build Trigger
 # Security notes:
 #   * `issue_comment` workflows always run the copy of this file on the default
 #     branch, so a pull request cannot change the rules below.
-#   * The job only runs for comments GitHub reports as authored by an OWNER, MEMBER
-#     or COLLABORATOR, so the TeamCity token is never handed to a run started by an
-#     outside contributor.
+#   * The job only runs for comments GitHub reports as authored by an OWNER or a
+#     MEMBER of the organization, matching the `+pr: github_role=MEMBER` filter on the
+#     trigger, so the TeamCity token is never handed to a run started by an outside
+#     contributor. `COLLABORATOR` is deliberately excluded: it also covers outside
+#     collaborators invited to this repository who are not organization members.
 #   * The TeamCity project uses `buildSettings = PREFER_VCS`, so a build started on a
 #     fork pull request runs the build steps *as defined in that pull request* and can
 #     read the project's secrets. Read the diff before commenting `/verify`.
@@ -34,7 +36,7 @@ jobs:
     if: >-
       github.repository == 'gradle/gradle-plugin-compatibility-plugin'
       && github.event.issue.pull_request != null
-      && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+      && contains(fromJSON('["OWNER", "MEMBER"]'), github.event.comment.author_association)
       && (contains(github.event.comment.body, '/verify') || contains(github.event.comment.body, '/build'))
     runs-on: ubuntu-latest
     permissions:
