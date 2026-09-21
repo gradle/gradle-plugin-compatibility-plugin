@@ -1,0 +1,177 @@
+name: TeamCity Build Trigger
+
+# Starts the required "Verify Gradle Plugin Compatibility Plugin" build when a member
+# comments `/verify` on a pull request.
+#
+# The `Verify` trigger in .teamcity/Project.kt only auto-builds the default branch,
+# `devprod/*` and member pull requests, so fork and dependabot pull requests never get
+# the required check. This is the manual start they need, moved out of the TeamCity UI.
+#
+# Security notes:
+#   * `issue_comment` always runs the default-branch copy of this file, so a pull
+#     request cannot change the rules below, and no pull request code is checked out.
+#   * Only OWNER and MEMBER comments start the job, matching `+pr: github_role=MEMBER`
+#     on the trigger. `COLLABORATOR` is excluded — it also covers outside collaborators
+#     who are not organization members.
+#   * `buildSettings = PREFER_VCS` means a build on a fork pull request runs that
+#     branch's own build scripts with the project secrets. Read the diff first.
+
+on:
+  issue_comment:
+    types: [ created ]
+
+permissions: {}
+
+jobs:
+  trigger-verify-build:
+    name: Trigger Verify build
+    # `issue_comment` also fires for plain issues, and the phrase check here is loose
+    # on purpose — the exact match happens in the first step. Keeping the author check
+    # at job level means an untrusted comment never reaches the secret.
+    if: >-
+      github.repository == 'gradle/gradle-plugin-compatibility-plugin'
+      && github.event.issue.pull_request != null
+      && contains(fromJSON('["OWNER", "MEMBER"]'), github.event.comment.author_association)
+      && (contains(github.event.comment.body, '/verify') || contains(github.event.comment.body, '/build'))
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # assume the AWS role that reads the TeamCity token
+      issues: write # react to the triggering comment and post the build link back
+      pull-requests: read # read the pull request head revision
+    steps:
+      - name: Parse the trigger comment
+        id: parse
+        uses: actions/github-script@v9.0.0
+        with:
+          # language=JS
+          script: |
+            // The job condition also matches `/verify` mentioned in prose, so require
+            // the phrase to stand on a line of its own before doing anything.
+            if (!/^\s*\/(verify|build)\s*$/m.test(context.payload.comment.body)) {
+              core.info('No build request found in the comment, nothing to do.')
+              core.setOutput('requested', 'false')
+              return
+            }
+
+            // Set before the API call below, so that a failure there still reports
+            // back on the pull request instead of failing silently.
+            core.setOutput('requested', 'true')
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            })
+
+            core.setOutput('head-sha', pr.head.sha)
+            // `head.repo` is null once a fork has been deleted; treat that as a fork.
+            core.setOutput('fork', String(pr.head.repo?.full_name !== pr.base.repo.full_name))
+
+      - name: Acknowledge the request
+        if: steps.parse.outputs.requested == 'true'
+        uses: actions/github-script@v9.0.0
+        with:
+          # language=JS
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: 'eyes',
+            })
+
+      - name: Configure AWS credentials
+        if: steps.parse.outputs.requested == 'true'
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          role-to-assume: arn:aws:iam::992382829881:role/GHASecrets_gradle-plugin-compatibility-plugin_all
+          aws-region: eu-central-1
+
+      - name: Get the TeamCity token
+        if: steps.parse.outputs.requested == 'true'
+        uses: aws-actions/aws-secretsmanager-get-secrets@v3.0.1
+        with:
+          secret-ids: |
+            TEAMCITY_ACCESS_TOKEN, gha/gradle-plugin-compatibility-plugin/_all/TEAMCITY_ACCESS_TOKEN
+
+      - name: Trigger the Verify build
+        id: trigger
+        if: steps.parse.outputs.requested == 'true'
+        uses: actions/github-script@v9.0.0
+        env:
+          TEAMCITY_TOKEN: ${{ env.TEAMCITY_ACCESS_TOKEN }}
+          BUILD_TYPE_ID: VerifyGradlePluginCompatibilityPlugin
+          # The `pullRequests` build feature makes TeamCity track every pull request as
+          # a `pull/<number>` logical branch, and a build on that branch publishes its
+          # status to the pull request head commit — which is what the required check
+          # reads. The fork's own branch name is not known to the VCS root.
+          BRANCH_NAME: pull/${{ github.event.issue.number }}
+        with:
+          # language=JS
+          script: |
+            const { TEAMCITY_TOKEN, BUILD_TYPE_ID, BRANCH_NAME } = process.env
+
+            const response = await fetch('https://builds.gradle.org/app/rest/buildQueue', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${TEAMCITY_TOKEN}`,
+                'Content-Type': 'application/xml',
+                Accept: 'application/json',
+              },
+              body: `<build branchName="${BRANCH_NAME}"><buildType id="${BUILD_TYPE_ID}"/></build>`,
+            })
+
+            const body = await response.text()
+            if (!response.ok) {
+              throw new Error(`TeamCity rejected the build request (HTTP ${response.status}): ${body}`)
+            }
+
+            const build = JSON.parse(body)
+            core.info(`Queued build ${build.id} on branch ${build.branchName}: ${build.webUrl}`)
+            core.setOutput('build-url', build.webUrl)
+            // Report the branch TeamCity actually resolved: if it does not know the
+            // pull request yet it falls back to the default branch, and the required
+            // check would never appear.
+            core.setOutput('build-branch', build.branchName)
+
+      - name: Report the queued build
+        if: steps.parse.outputs.requested == 'true'
+        uses: actions/github-script@v9.0.0
+        env:
+          BUILD_URL: ${{ steps.trigger.outputs.build-url }}
+          BUILD_BRANCH: ${{ steps.trigger.outputs.build-branch }}
+          HEAD_SHA: ${{ steps.parse.outputs.head-sha }}
+          IS_FORK: ${{ steps.parse.outputs.fork }}
+        with:
+          # language=JS
+          script: |
+            const { BUILD_URL, BUILD_BRANCH, HEAD_SHA, IS_FORK } = process.env
+
+            const lines = [
+              `🚀 [Verify build started](${BUILD_URL}) on \`${BUILD_BRANCH}\` at ${HEAD_SHA.substring(0, 7)}. The check lands here when it finishes — comment \`/verify\` again after each push.`,
+            ]
+            if (IS_FORK === 'true') {
+              lines.push('', "⚠️ Fork pull request: the build runs this branch's own build scripts.")
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: lines.join('\n'),
+            })
+
+      - name: Report the failure
+        if: failure() && steps.parse.outputs.requested == 'true'
+        uses: actions/github-script@v9.0.0
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          # language=JS
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `❌ Could not start the Verify build ([details](${process.env.RUN_URL})). The TeamCity UI still works.`,
+            })
