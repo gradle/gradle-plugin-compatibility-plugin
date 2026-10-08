@@ -32,7 +32,7 @@ object Project : Project({
     buildType(ReleaseSnapshot)
 
     params {
-         param("env.DEVELOCITY_ACCESS_KEY", "ge.gradle.org=%ge.gradle.org.access.key.without.domain%")
+         param("env.DEVELOCITY_ACCESS_KEY", "ge.gradle.org=%ge.gradle.org.access.key.without.domain%;usw2-edge.gradle.org=%ge.gradle.org.access.key.without.domain%;eun-edge.gradle.org=%ge.gradle.org.access.key.without.domain%")
     }
 })
 
