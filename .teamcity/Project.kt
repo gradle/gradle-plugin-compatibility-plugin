@@ -30,10 +30,6 @@ object Project : Project({
     buildType(Verify)
     buildType(PublishToPluginPortal)
     buildType(ReleaseSnapshot)
-
-    params {
-         param("env.DEVELOCITY_ACCESS_KEY", "ge.gradle.org=%ge.gradle.org.access.key.without.domain%;usw2-edge.gradle.org=%ge.gradle.org.access.key.without.domain%;eun-edge.gradle.org=%ge.gradle.org.access.key.without.domain%")
-    }
 })
 
 private val defaultGradleParameters = listOf(
