@@ -1,0 +1,25 @@
+// Maven Central is blackholed on CI agents, so resolve it through the internal mirror instead.
+// Groovy, because the TeamCity DSL compiler tries to compile any .kts file under .teamcity/.
+def mirrorUrl = 'https://repo.grdev.net/artifactory/maven-central'
+
+def redirectMavenCentral = { RepositoryHandler repositories ->
+    repositories.withType(MavenArtifactRepository).configureEach {
+        if (it.url.host == 'repo.maven.apache.org') {
+            it.url = mirrorUrl
+        }
+    }
+}
+
+beforeSettings { settings ->
+    // The Plugin Portal redirects Maven Central artifacts to repo.maven.apache.org, so try the mirror first.
+    settings.pluginManagement.repositories {
+        maven { url = mirrorUrl }
+        gradlePluginPortal()
+    }
+    redirectMavenCentral(settings.buildscript.repositories)
+}
+
+beforeProject { project ->
+    redirectMavenCentral(project.buildscript.repositories)
+    redirectMavenCentral(project.repositories)
+}

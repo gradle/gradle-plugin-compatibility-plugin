@@ -33,6 +33,7 @@ object Project : Project({
 })
 
 private val defaultGradleParameters = listOf(
+    "--init-script %teamcity.build.checkoutDir%/.teamcity/mirror-init.gradle",
     "-Dorg.gradle.java.installations.auto-download=false",
     "-Dorg.gradle.java.installations.auto-detect=false",
     "-Dorg.gradle.java.installations.fromEnv=JAVA_HOME,JDK8",
