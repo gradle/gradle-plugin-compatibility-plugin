@@ -71,6 +71,8 @@ kotlin {
         apiVersion = KotlinVersion.KOTLIN_1_8
         // Compile production code to Java 8 bytecode
         jvmTarget = JvmTarget.JVM_1_8
+        // Gradle 9.8+ bundles Kotlin 2.4 in gradleApi(), whose metadata the pinned Kotlin compiler cannot read.
+        freeCompilerArgs.add("-Xskip-metadata-version-check")
     }
 
     // Not downgrading core libraries causes Metadata incompatibility (unknown protobuf tag).
