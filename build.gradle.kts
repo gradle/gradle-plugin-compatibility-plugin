@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
+import java.util.zip.ZipFile
 
 plugins {
     `java-gradle-plugin`
@@ -229,6 +230,28 @@ tasks {
 
     register("checkstyle") {
         dependsOn(withType<Checkstyle>())
+    }
+
+    val verifySourcesJar = register("verifySourcesJar") {
+        group = "verification"
+        description = "Checks that the Kotlin source of the compatibility extension function is published for IDE navigation"
+        val sourcesJar = named<Jar>(sourceSets.main.get().sourcesJarTaskName).flatMap { it.archiveFile }
+        inputs.file(sourcesJar)
+        doLast {
+            val entryName = "org/gradle/plugin/compatibility/SupportedFeaturesExtensions.kt"
+            val declaration = "fun PluginDeclaration.compatibility(action: Action<in CompatibilityExtension>)"
+            ZipFile(sourcesJar.get().asFile).use { zip ->
+                val entry = zip.getEntry(entryName) ?: error("${sourcesJar.get()} does not contain $entryName")
+                val source = zip.getInputStream(entry).bufferedReader().readText()
+                if ("package org.gradle.plugin.compatibility" !in source || declaration !in source) {
+                    error("$entryName in ${sourcesJar.get()} does not declare '$declaration'")
+                }
+            }
+        }
+    }
+
+    check {
+        dependsOn(verifySourcesJar)
     }
 }
 
