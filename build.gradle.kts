@@ -252,6 +252,7 @@ tasks {
 
     check {
         dependsOn(verifySourcesJar)
+        dependsOn(gradle.includedBuild("build-logic").task(":check"))
     }
 }
 
