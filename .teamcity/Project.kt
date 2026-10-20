@@ -30,10 +30,6 @@ object Project : Project({
     buildType(Verify)
     buildType(PublishToPluginPortal)
     buildType(ReleaseSnapshot)
-
-    params {
-         param("env.DEVELOCITY_ACCESS_KEY", "!awssm://teamcity/gradle-plugin-compatibility-plugin/_all/DEVELOCITY_ACCESS_KEY")
-    }
 })
 
 private val defaultGradleParameters = listOf(
