@@ -63,7 +63,6 @@
             <trusting group="org.apache.commons" name="commons-lang3"/>
          </trusted-key>
          <trusted-key id="2E3A1AFFE42B5F53AF19F780BCF4173966770193" group="org.jetbrains" name="annotations"/>
-         <trusted-key id="3F05DDA9F317301E927136D417A27CE7A60FF5F0" group="io.opentelemetry"/>
          <trusted-key id="3F2A008A91D11A7FAC4A0786F13D3E721D56BD54" group="org.reflections" name="reflections"/>
          <trusted-key id="41CD49B4EF5876F9E9F691DABAC30622339994C4" group="org.jspecify" name="jspecify"/>
          <trusted-key id="4C5F68D09D42BA7FAC888DF9A929EA2321FDBF8F">
@@ -76,7 +75,6 @@
          <trusted-key id="6F538074CCEBF35F28AF9B066A0975F8B1127B83" group="org.jetbrains.kotlin"/>
          <trusted-key id="7186BBF993566D8C2F4F7ED7D945E643368FEF62" group="io.github.eisop" name="dataflow-errorprone"/>
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs" name="jsr305"/>
-         <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
          <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671" group="com.gradle" name="develocity-gradle-plugin"/>
          <trusted-key id="A4FD709CC4B0515F2E6AF04E218FA0F6A941A037" group="com.github.kevinstern" name="software-and-algorithms"/>
          <trusted-key id="A7892505CF1A58076453E52D7999BEFBA1039E8B" group="net.bytebuddy"/>
@@ -89,15 +87,11 @@
          <trusted-key id="BDB5FA4FE719D787FB3D3197F6D4A1D411E9D1AE" group="^com[.]google($|([.].*))" regex="true"/>
          <trusted-key id="BE685132AFD2740D9095F9040CC0B712FEE75827" group="org.assertj" name="assertj-core"/>
          <trusted-key id="C3259D20DAEC4ACE6D57CC83340B090F727518D8" group="com.google.j2objc" name="j2objc-annotations"/>
-         <trusted-key id="C7BE5BCC9FEC15518CFDA882B0F3710FA64900E7">
-            <trusting group="com.google.code.gson"/>
-            <trusting group="^com[.]google[.]auto($|([.].*))" regex="true"/>
-         </trusted-key>
+         <trusted-key id="C7BE5BCC9FEC15518CFDA882B0F3710FA64900E7" group="^com[.]google[.]auto($|([.].*))" regex="true"/>
          <trusted-key id="C9F5BB47FCF51250930BD8E22F73DAE490984549" group="com.uber.nullaway" name="nullaway"/>
          <trusted-key id="D477D51812E692011DB11E66A6EA2E2BF22E0543" group="io.github.java-diff-utils"/>
          <trusted-key id="E0D98C5FD55A8AF232290E58DEE12B9896F97E34" group="org.pcollections" name="pcollections"/>
          <trusted-key id="E5C3B1929191DF06136CCB2B164779204E106A76" group="org.javassist" name="javassist"/>
-         <trusted-key id="E7DC75FC24FB3C8DFE8086AD3D5839A2262CBBFB" group="org.jetbrains.kotlinx" name="kotlinx-coroutines-core-jvm"/>
          <trusted-key id="EE0CA873074092F806F59B65D364ABAA39A47320">
             <trusting group="com.google.errorprone"/>
             <trusting group="com.google.googlejavaformat"/>
@@ -128,11 +122,6 @@
       <component group="net.ltgt.gradle" name="gradle-nullaway-plugin" version="3.1.0">
          <artifact name="gradle-nullaway-plugin-3.1.0.jar">
             <sha512 value="99c31ad48fb39e9baf142a956c637d7b29e216d14051007287597ba75a7db9b6db8c8b4a3717db4a2088947d490b36b5b488312bc4d1d90a70c4ed1305c0ef3e" origin="Verified" reason="Artifact is not signed"/>
-         </artifact>
-      </component>
-      <component group="org.jetbrains.kotlinx" name="kotlinx-serialization-core-jvm" version="1.7.3">
-         <artifact name="kotlinx-serialization-core-jvm-1.7.3.jar">
-            <pgp value="E7DC75FC24FB3C8DFE8086AD3D5839A2262CBBFB"/>
          </artifact>
       </component>
    </components>
