@@ -65,12 +65,12 @@ public abstract class CompatibilityTestBase {
         // TODO(https://github.com/gradle/gradle-plugin-compatibility-plugin/issues/3) Figure out the strategy for
         //  testing latest Gradle releases here (automatically?)
         Stream<GradleVersion> versions = Stream.of(
-            "7.4.2", // Oldest supported
-            "7.6.6", // Latest 7.x
-            "8.0.2", // First 8.x release
-            "8.14.5", // Last 8.x release
-            "9.0.0", // First 9.x release
-            "9.7.1" // Last 9.x release
+            "7.4.2",  // Oldest supported
+            "7.6.6",  // Latest 7.x
+            "8.0.2",  // First 8.x release
+            "8.14.6", // Last 8.x release
+            "9.0.0",  // First 9.x release
+            "9.8.2"   // Last 9.x release
         ).map(GradleVersion::version);
 
         // Skip Gradle 9+ when running with Java 8
