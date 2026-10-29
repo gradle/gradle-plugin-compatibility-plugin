@@ -19,7 +19,7 @@ pluginManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.5.0"
+    id("com.gradle.develocity") version "4.5.1"
     id("io.github.gradle.develocity-conventions-plugin") version "0.15.0"
 }
 
