@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package org.gradle.plugin.compatibility
-
-import org.gradle.api.Action
-import org.gradle.plugin.compatibility.internal.CompatibilityStrategy
-import org.gradle.plugin.devel.PluginDeclaration
-
-/**
- * Applies compatibility configuration defined in `action` to the `PluginDeclaration`.
- *
- * @since 1.0.0
- */
-fun PluginDeclaration.compatibility(action: Action<in CompatibilityExtension>) {
-    CompatibilityStrategy.getInstance().configure(this, action)
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    repositories {
+        mavenCentral()
+    }
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
 }
+
+rootProject.name = "build-logic"

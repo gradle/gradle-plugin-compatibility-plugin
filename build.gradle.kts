@@ -19,10 +19,6 @@ import net.ltgt.gradle.nullaway.nullaway
 import org.gradle.api.credentials.HttpHeaderCredentials
 import org.gradle.authentication.http.HttpHeaderAuthentication
 import org.gradle.plugin.compatibility.compatibility
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
 plugins {
@@ -34,9 +30,10 @@ plugins {
 
     alias(libs.plugins.compatibility)
     alias(libs.plugins.errorprone)
-    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.nullaway)
     alias(libs.plugins.pluginPublish)
+
+    id("gradlebuild.kotlin-facade")
 }
 
 group = "org.gradle.plugin"
@@ -62,21 +59,10 @@ dependencies {
     }
 }
 
-kotlin {
-    // Set up the JDK used to compile Java and Kotlin code.
-    jvmToolchain(libs.versions.jvm.compileJdk)
-    compilerOptions {
-        // Compile production code to Kotlin 1.8 to ensure compatibility with older Gradle versions, like 7.4
-        languageVersion = KotlinVersion.KOTLIN_1_8
-        apiVersion = KotlinVersion.KOTLIN_1_8
-        // Compile production code to Java 8 bytecode
-        jvmTarget = JvmTarget.JVM_1_8
-        // Gradle 9.8+ bundles Kotlin 2.4 in gradleApi(), whose metadata the pinned Kotlin compiler cannot read.
-        freeCompilerArgs.add("-Xskip-metadata-version-check")
+java {
+    toolchain {
+        languageVersion(libs.versions.jvm.compileJdk)
     }
-
-    // Not downgrading core libraries causes Metadata incompatibility (unknown protobuf tag).
-    coreLibrariesVersion = "1.8.0"
 }
 
 checkstyle {
@@ -230,12 +216,12 @@ tasks {
     register("checkstyle") {
         dependsOn(withType<Checkstyle>())
     }
+
+    check {
+        dependsOn(gradle.includedBuild("build-logic").task(":check"))
+    }
 }
 
-
-fun KotlinJvmProjectExtension.jvmToolchain(version: Provider<out String>) {
-    this.jvmToolchain(version.get().toInt())
-}
 
 fun JavaToolchainSpec.languageVersion(version: Provider<out String>) {
     this.languageVersion = version.map(JavaLanguageVersion::of)
