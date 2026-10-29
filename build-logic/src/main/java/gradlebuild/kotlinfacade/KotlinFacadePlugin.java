@@ -34,6 +34,10 @@ import java.util.List;
  */
 public abstract class KotlinFacadePlugin implements Plugin<Project> {
 
+    // Kotlin 1.8 metadata is what the Kotlin compiler used to emit for this plugin; it is readable by the
+    // Kotlin embedded in every supported Gradle version, down to 7.4.2
+    private static final List<Integer> METADATA_VERSION = List.of(1, 8, 0);
+
     @Override
     public void apply(Project project) {
         project.getPluginManager().withPlugin("java", ignored -> {
@@ -65,9 +69,7 @@ public abstract class KotlinFacadePlugin implements Plugin<Project> {
             task.setGroup("build");
             task.setDescription("Generates the Kotlin DSL facade for the compatibility extension function");
             task.getModuleName().convention(project.getName());
-            // Kotlin 1.8 metadata is what the Kotlin compiler used to emit for this plugin; it is readable by the
-            // Kotlin embedded in every supported Gradle version, down to 7.4.2
-            task.getMetadataVersion().convention(List.of(1, 8, 0));
+            task.getMetadataVersion().convention(METADATA_VERSION);
             task.getJavaOutputDirectory().convention(buildDirectory.dir("generated/sources/kotlinFacade/java"));
             task.getKotlinOutputDirectory().convention(buildDirectory.dir("generated/sources/kotlinFacade/kotlin"));
             task.getResourcesOutputDirectory().convention(buildDirectory.dir("generated/resources/kotlinFacade"));
