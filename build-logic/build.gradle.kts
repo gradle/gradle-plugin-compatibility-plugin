@@ -20,8 +20,8 @@ plugins {
 }
 
 dependencies {
-    // Gradle 9.7+ ships this library and exposes it to plugins, so its copy is the one used at runtime
-    compileOnly(libs.build.kotlinMetadataJvm)
+    // Gradle 9.7+ ships this library and exposes it to plugins, so compile against the version Gradle ships
+    compileOnly(embeddedKotlin("metadata-jvm"))
 }
 
 gradlePlugin {
